@@ -1,7 +1,7 @@
 const express = require("express");
 const { DocumentStore } = require("ravendb");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require("node-jsonwebtoken");
 const User = require("./models/user");
 
 const app = express();
