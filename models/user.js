@@ -9,7 +9,8 @@ class User {
     role,
     photo,
     video,
-    services
+    services,
+    age
   ) {
     this.email = email;
     this.passwordHash = passwordHash;
@@ -20,6 +21,7 @@ class User {
     this.photo = photo;
     this.video = video;
     this.services = services;
+    this.age = age;
   }
 }
 

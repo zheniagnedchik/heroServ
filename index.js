@@ -27,6 +27,7 @@ app.post("/register", async (req, res) => {
       photo,
       video,
       services,
+      age,
     } = req.body;
 
     const session = store.openSession();
@@ -52,7 +53,8 @@ app.post("/register", async (req, res) => {
       role,
       photo,
       video,
-      services
+      services,
+      age
     );
     await session.store(newUser);
     await session.saveChanges();
