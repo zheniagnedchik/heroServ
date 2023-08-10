@@ -11,6 +11,10 @@ app.use(express.json());
 const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
 
+app.get("/", async (req, res) => {
+  res.send("hello");
+});
+
 app.post("/register", async (req, res) => {
   try {
     const {
