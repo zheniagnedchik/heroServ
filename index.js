@@ -29,7 +29,7 @@ app.post("/register", async (req, res) => {
       services,
       age,
     } = req.body;
-
+    console.log(req.body)
     const session = store.openSession();
     const existingUser = await session
       .query(User)
