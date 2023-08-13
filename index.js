@@ -59,9 +59,14 @@ app.post("/register", async (req, res) => {
     await session.store(newUser);
     await session.saveChanges();
 
+     const registeredUser = await session
+      .query(User)
+      .whereEquals("email", email)
+      .firstOrNull();
+
     // Генерация и выдача JWT токена
     const token = jwt.sign({ email }, "secret_key");
-    res.status(201).json({ message: "User registered successfully", token });
+    res.status(201).json({ message: "User registered successfully", token,registeredUser  });
   } catch (error) {
     console.error("Error registering user:", error);
     res
