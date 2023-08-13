@@ -72,7 +72,7 @@ app.post("/register", async (req, res) => {
       photo,
       video,
       services,
-      age  });
+      age  }});
   } catch (error) {
     console.error("Error registering user:", error);
     res
