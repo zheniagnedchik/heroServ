@@ -29,7 +29,7 @@ app.post("/register", async (req, res) => {
       services,
       age,
     } = req.body;
-
+    console.log(req.body)
     const session = store.openSession();
     const existingUser = await session
       .query(User)
@@ -70,9 +70,11 @@ app.post("/register", async (req, res) => {
   }
 });
 app.post("/login", async (req, res) => {
+  console.log("login")
   try {
     const { email, password } = req.body;
-
+    console.log(email)
+    console.log(password)
     const session = store.openSession();
     const user = await session
       .query(User)
@@ -85,7 +87,7 @@ app.post("/login", async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(password, user.passwordHash);
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Неверный логин или пароль" });
+      return res.status(407).json({ error: "Неверный логин или пароль" });
     }
 
     // Генерация и выдача JWT токена
