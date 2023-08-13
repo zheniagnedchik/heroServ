@@ -90,7 +90,7 @@ app.post("/login", async (req, res) => {
 
     // Генерация и выдача JWT токена
     const token = jwt.sign({ email }, "secret_key");
-    res.json({ token });
+    res.json({ token, user });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ error: "Произошла ошибка при входе в систему" });
