@@ -10,7 +10,8 @@ class User {
     photo,
     video,
     services,
-    age
+    age,
+    thumbnail
   ) {
     this.email = email;
     this.passwordHash = passwordHash;
@@ -22,6 +23,7 @@ class User {
     this.video = video;
     this.services = services;
     this.age = age;
+    this.thumbnail = thumbnail;
   }
 }
 
