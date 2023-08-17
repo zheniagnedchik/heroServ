@@ -202,7 +202,7 @@ console.log("user", user)
     if (user) {
           const name = file.req.file.originalname;
     const testName = name.split("_");
-      user[folder] = path.join(folder, testName);
+      user[folder] = path.join(folder, testName[1]);
       await saveUser(user);
       console.log( "Изображение успешно загружено и путь сохранен в базе данных.")
       res.json({
