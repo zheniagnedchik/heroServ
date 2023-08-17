@@ -80,7 +80,7 @@ app.post("/register", async (req, res) => {
         video,
         services,
         age,
-        thumbnail,
+        thumbnails,
       },
     });
   } catch (error) {
@@ -200,7 +200,9 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     const user = await findUserByEmail(email);
 console.log("user", user)
     if (user) {
-      user[folder] = path.join(folder, req.file.originalname);
+          const name = file.req.file.originalname;
+    const testName = name.split("_");
+      user[folder] = path.join(folder, testName);
       await saveUser(user);
       console.log( "Изображение успешно загружено и путь сохранен в базе данных.")
       res.json({
