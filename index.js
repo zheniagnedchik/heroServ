@@ -202,10 +202,12 @@ console.log("user", user)
     if (user) {
       user[folder] = path.join(folder, req.file.originalname);
       await saveUser(user);
+      console.log( "Изображение успешно загружено и путь сохранен в базе данных.)
       res.json({
         message: "Изображение успешно загружено и путь сохранен в базе данных.",
       });
     } else {
+      console.log( "Пользователь не найден." )
       res.status(404).json({ error: "Пользователь не найден." });
     }
   } catch (error) {
