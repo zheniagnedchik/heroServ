@@ -200,7 +200,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     const user = await findUserByEmail(email);
 console.log("user", user)
     if (user) {
-          const name = file.req.file.originalname;
+          const name = req.file.originalname;
     const testName = name.split("_");
       user[folder] = path.join(folder, testName[1]);
       await saveUser(user);
