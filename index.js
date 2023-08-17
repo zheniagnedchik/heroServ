@@ -7,6 +7,7 @@ const multer = require("multer"); // Библиотека для обработ�
 const path = require("path");
 
 const app = express();
+app.use(express.limit('500mb'));
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 app.use("/avatar", express.static(path.join(__dirname, "avatar")));
 const port = 3000;
