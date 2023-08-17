@@ -7,9 +7,9 @@ const multer = require("multer"); // Библиотека для обработ�
 const path = require("path");
 
 const app = express();
+app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 const port = 3000;
 app.use(express.json());
-app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")))
 
 const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
@@ -31,7 +31,8 @@ app.post("/register", async (req, res) => {
       video,
       services,
       age,
-      thumbnail,
+      thumbnails,
+      avatar,
     } = req.body;
     console.log(req.body);
     const session = store.openSession();
@@ -59,7 +60,8 @@ app.post("/register", async (req, res) => {
       video,
       services,
       age,
-      thumbnail
+      thumbnails,
+      avatar
     );
     await session.store(newUser);
     await session.saveChanges();
@@ -80,7 +82,7 @@ app.post("/register", async (req, res) => {
         video,
         services,
         age,
-        thumbnail,
+        thumbnails,
       },
     });
   } catch (error) {
@@ -166,16 +168,7 @@ app.post("/get-user", async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 });
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "thumbnails/"); // Путь для сохранения файлов
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname); // Имя сохраняемого файла
-  },
-});
 
-const upload = multer({ storage: storage });
 async function findUserByEmail(email) {
   const session = store.openSession();
   const user = await session
@@ -189,17 +182,37 @@ async function saveUser(user) {
   await session.store(user);
   await session.saveChanges();
 }
-app.post("/upload", upload.single("image"), async (req, res) => {
-  console.log("🚀 ~ file: index.js:187 ~ app.post ~ req:", req.body);
+const createStorage = (folder) =>
+  multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, folder); // Переданный путь для сохранения файлов
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname); // Имя сохраняемого файла
+    },
+  });
+
+app.post("/upload", async (req, res) => {
   try {
-    const { email } = req.body; // Email пользователя
+    const { email, folder } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
 
     if (user) {
-      user.thumbnail = path.join("thumbnails", req.file.originalname);
-      await saveUser(user);
-      res.json({
-        message: "Изображение успешно загружено и путь сохранен в базе данных.",
+      const storage = createStorage(folder); // Создаем объект storage с динамическим путем
+      const upload = multer({ storage: storage });
+
+      upload.single("image")(req, res, async (err) => {
+        if (err) {
+          return res.status(400).json({ error: "Ошибка при загрузке файла." });
+        }
+
+        user[folder] = path.join("folder", req.file.originalname); // Используем path.join для формирования пути
+        await saveUser(user);
+
+        return res.json({
+          message:
+            "Изображение успешно загружено и путь сохранен в базе данных.",
+        });
       });
     } else {
       res.status(404).json({ error: "Пользователь не найден." });
