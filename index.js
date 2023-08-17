@@ -5,7 +5,9 @@ const jwt = require("node-jsonwebtoken");
 const User = require("./models/user");
 const multer = require("multer"); // Библиотека для обработки мультипарт-форм
 const path = require("path");
-
+const { EventEmitter } = require("stream");
+const emitter = new EventEmitter();
+emitter.setMaxListeners(15);
 const app = express();
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 const port = 3000;
