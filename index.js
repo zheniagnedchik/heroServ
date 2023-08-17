@@ -32,7 +32,6 @@ app.post("/register", async (req, res) => {
       services,
       age,
       thumbnails,
-      avatar,
     } = req.body;
     console.log(req.body);
     const session = store.openSession();
@@ -60,8 +59,7 @@ app.post("/register", async (req, res) => {
       video,
       services,
       age,
-      thumbnails,
-      avatar
+      thumbnails
     );
     await session.store(newUser);
     await session.saveChanges();
@@ -82,7 +80,7 @@ app.post("/register", async (req, res) => {
         video,
         services,
         age,
-        thumbnails,
+        thumbnail,
       },
     });
   } catch (error) {
@@ -168,7 +166,11 @@ app.post("/get-user", async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 });
-
+async function saveUser(user) {
+  const session = store.openSession();
+  await session.store(user);
+  await session.saveChanges();
+}
 async function findUserByEmail(email) {
   const session = store.openSession();
   const user = await session
@@ -177,42 +179,29 @@ async function findUserByEmail(email) {
     .firstOrNull();
   return user;
 }
-async function saveUser(user) {
-  const session = store.openSession();
-  await session.store(user);
-  await session.saveChanges();
-}
-const createStorage = (folder) =>
-  multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, folder); // Переданный путь для сохранения файлов
-    },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname); // Имя сохраняемого файла
-    },
-  });
-
-app.post("/upload", async (req, res) => {
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const name = file.originalname;
+    const testName = name.split("_");
+    cb(null, testName[0]);
+  },
+  filename: (req, file, cb) => {
+    const name = file.originalname;
+    const testName = name.split("_");
+    cb(null, testName[1]);
+  },
+});
+const upload = multer({ storage: storage });
+app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     const { email, folder } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
 
     if (user) {
-      const storage = createStorage(folder); // Создаем объект storage с динамическим путем
-      const upload = multer({ storage: storage });
-
-      upload.single("image")(req, res, async (err) => {
-        if (err) {
-          return res.status(400).json({ error: "Ошибка при загрузке файла." });
-        }
-
-        user[folder] = path.join("folder", req.file.originalname); // Используем path.join для формирования пути
-        await saveUser(user);
-
-        return res.json({
-          message:
-            "Изображение успешно загружено и путь сохранен в базе данных.",
-        });
+      user[folder] = path.join(folder, req.file.originalname);
+      await saveUser(user);
+      res.json({
+        message: "Изображение успешно загружено и путь сохранен в базе данных.",
       });
     } else {
       res.status(404).json({ error: "Пользователь не найден." });
