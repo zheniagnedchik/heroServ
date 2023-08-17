@@ -183,11 +183,13 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const name = file.originalname;
     const testName = name.split("_");
+        console.log("user", testName)
     cb(null, testName[0]);
   },
   filename: (req, file, cb) => {
     const name = file.originalname;
     const testName = name.split("_");
+    console.log("user", testName)
     cb(null, testName[1]);
   },
 });
@@ -196,7 +198,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     const { email, folder } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
-
+console.log("user", user)
     if (user) {
       user[folder] = path.join(folder, req.file.originalname);
       await saveUser(user);
