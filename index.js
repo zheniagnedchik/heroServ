@@ -9,6 +9,7 @@ const path = require("path");
 const app = express();
 const port = 3000;
 app.use(express.json());
+app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")))
 
 const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
