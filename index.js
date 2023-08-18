@@ -214,7 +214,12 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     if (user) {
       const name = req.file.originalname;
       const testName = name.split("_");
-      user[folder] = path.join(folder, testName[1]);
+      if (folder === "photo") {
+        user.photo.push(path.join(folder, testName[1]));
+      } else {
+        user[folder] = path.join(folder, testName[1]);
+      }
+
       await saveUser(user);
       console.log(
         "Изображение успешно загружено и путь сохранен в базе данных."
