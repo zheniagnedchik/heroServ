@@ -33,6 +33,8 @@ app.post("/register", async (req, res) => {
       services,
       age,
       thumbnails,
+      about,
+      name,
     } = req.body;
     console.log(req.body);
     const session = store.openSession();
@@ -60,7 +62,9 @@ app.post("/register", async (req, res) => {
       video,
       services,
       age,
-      thumbnails
+      thumbnails,
+      about,
+      name
     );
     await session.store(newUser);
     await session.saveChanges();
@@ -82,6 +86,8 @@ app.post("/register", async (req, res) => {
         services,
         age,
         thumbnails,
+        about,
+        name,
       },
     });
   } catch (error) {
@@ -184,13 +190,13 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const name = file.originalname;
     const testName = name.split("_");
-        console.log("user", testName)
+    console.log("user", testName);
     cb(null, testName[0]);
   },
   filename: (req, file, cb) => {
     const name = file.originalname;
     const testName = name.split("_");
-    console.log("user", testName)
+    console.log("user", testName);
     cb(null, testName[1]);
   },
 });
@@ -199,18 +205,20 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     const { email, folder } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
-console.log("user", user)
+    console.log("user", user);
     if (user) {
-          const name = req.file.originalname;
-    const testName = name.split("_");
+      const name = req.file.originalname;
+      const testName = name.split("_");
       user[folder] = path.join(folder, testName[1]);
       await saveUser(user);
-      console.log( "Изображение успешно загружено и путь сохранен в базе данных.")
+      console.log(
+        "Изображение успешно загружено и путь сохранен в базе данных."
+      );
       res.json({
         message: "Изображение успешно загружено и путь сохранен в базе данных.",
       });
     } else {
-      console.log( "Пользователь не найден." )
+      console.log("Пользователь не найден.");
       res.status(404).json({ error: "Пользователь не найден." });
     }
   } catch (error) {
