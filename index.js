@@ -5,6 +5,7 @@ const jwt = require("node-jsonwebtoken");
 const User = require("./models/user");
 const multer = require("multer"); // Библиотека для обработки мультипарт-форм
 const path = require("path");
+const ffmpeg = require("fluent-ffmpeg");
 
 const app = express();
 
@@ -205,29 +206,82 @@ const storage = multer.diskStorage({
     cb(null, testName[1]);
   },
 });
+async function generateVideoThumbnail(
+  videoPath,
+  thumbnailPath,
+  thumbnailFileName
+) {
+  const vi = videoPath;
+  const thumbnail = thumbnailPath;
+  return new Promise((resolve, reject) => {
+    ffmpeg(videoPath)
+      .on("end", () => resolve(thumbnailPath))
+      .on("error", (err) => reject(err))
+      .screenshots({
+        timestamps: ["00:00:01"], // Время получения обложки (1 секунда)
+        filename: thumbnailFileName,
+        folder: thumbnailPath,
+      });
+  });
+}
 const upload = multer({ storage: storage });
 app.post("/upload", upload.single("file"), async (req, res) => {
   console.log(req);
   try {
-    const { email, folder } = req.body; // Email пользователя
+    const { email, folder, type } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
     console.log("user", user);
     if (user) {
       const name = req.file.originalname;
       const testName = name.split("_");
+      const fileUri = path.join(folder, testName[1]);
       if (folder === "photo") {
-        user.photo.push(path.join(folder, testName[1]));
+        if (type === "video") {
+          const thumbnailFileName = `${testName[1]}.jpg`;
+          const thumbnailUri = path.join(folder, thumbnailFileName);
+          const videoPath = req.file.path; // Путь к загруженному видео
+          const thumbnailPath = path.join(__dirname, folder); // Папка для сохранения обложки
+          const thumbnailFullPath = path.join(thumbnailPath, thumbnailFileName);
+          try {
+            await generateVideoThumbnail(
+              videoPath,
+              thumbnailPath,
+              thumbnailFileName
+            );
+            user.photo.push({
+              uri: path.join(folder, testName[1]),
+              type: "video",
+              thumbnail: thumbnailUri,
+            });
+
+            console.log(
+              "Файл и обложка успешно загружены и путь сохранен в базе данных."
+            );
+            res.json({
+              message:
+                "Файл и обложка успешно загружены и путь сохранен в базе данных.",
+            });
+          } catch (error) {
+            console.error(error);
+            res
+              .status(500)
+              .json({ error: "Ошибка при создании обложки видео." });
+          }
+        } else {
+          user.photo.push({
+            uri: path.join(folder, testName[1]),
+            type: "photo",
+          });
+        }
       } else {
         user[folder] = path.join(folder, testName[1]);
       }
 
       await saveUser(user);
-      console.log(
-        "Изображение успешно загружено и путь сохранен в базе данных."
-      );
-      res.json({
-        message: "Изображение успешно загружено и путь сохранен в базе данных.",
-      });
+
+      // res.json({
+      //   message: "Изображение успешно загружено и путь сохранен в базе данных.",
+      // });
     } else {
       console.log("Пользователь не найден.");
       res.status(404).json({ error: "Пользователь не найден." });
