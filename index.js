@@ -278,10 +278,9 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       }
 
       await saveUser(user);
-
-      // res.json({
-      //   message: "Изображение успешно загружено и путь сохранен в базе данных.",
-      // });
+      res.json({
+        message: "Изображение успешно загружено и путь сохранен в базе данных.",
+      });
     } else {
       console.log("Пользователь не найден.");
       res.status(404).json({ error: "Пользователь не найден." });
