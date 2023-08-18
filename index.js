@@ -205,7 +205,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-app.post("/upload", upload.single("image"), async (req, res) => {
+app.post("/upload", upload.single("file"), async (req, res) => {
   console.log(req);
   try {
     const { email, folder } = req.body; // Email пользователя
