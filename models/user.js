@@ -14,7 +14,7 @@ class User {
     thumbnails,
     avatar,
     about,
-    name
+    userName
   ) {
     this.email = email;
     this.passwordHash = passwordHash;
@@ -29,7 +29,7 @@ class User {
     this.thumbnails = thumbnails;
     this.avatar = avatar;
     this.about = about;
-    this.name = name;
+    this.userName = userName;
   }
 }
 
