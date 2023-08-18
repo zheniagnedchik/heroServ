@@ -10,6 +10,7 @@ const app = express();
 
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 app.use("/avatar", express.static(path.join(__dirname, "avatar")));
+app.use("/photo", express.static(path.join(__dirname, "photo")));
 const port = 3000;
 app.use(express.json());
 
