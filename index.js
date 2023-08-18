@@ -233,7 +233,25 @@ app.post("/upload", upload.single("image"), async (req, res) => {
       .json({ error: "Произошла ошибка при обновлении пути в базе данных." });
   }
 });
+app.post("/add-about", async (req, res) => {
+  try {
+    const { email, about } = req.body;
+    const user = await findUserByEmail(email);
 
+    if (user) {
+      user[about] = about;
+      await saveUser(user);
+      res.status(200).json({ message: "информация о пользователе добавлена" });
+    } else {
+      res
+        .status(404)
+        .json({ error: `Пользователь с email ${email} не найден` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Произошла ошибка сервера" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
