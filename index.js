@@ -7,6 +7,7 @@ const multer = require("multer"); // Библиотека для обработ�
 const path = require("path");
 
 const app = express();
+
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 app.use("/avatar", express.static(path.join(__dirname, "avatar")));
 const port = 3000;
@@ -202,6 +203,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 app.post("/upload", upload.single("image"), async (req, res) => {
+  console.log(req)
   try {
     const { email, folder } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
