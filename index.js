@@ -239,7 +239,7 @@ app.post("/add-about", async (req, res) => {
     const user = await findUserByEmail(email);
 
     if (user) {
-      user[about] = about;
+      user.about = about;
       await saveUser(user);
       res.status(200).json({ message: "информация о пользователе добавлена" });
     } else {
