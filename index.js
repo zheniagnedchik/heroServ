@@ -1,5 +1,5 @@
 const express = require("express");
-const { DocumentStore } = require("ravendb");
+const { DocumentStore, IndexDefinition, FieldIndexing } = require("ravendb");
 const bcrypt = require("bcrypt");
 const jwt = require("node-jsonwebtoken");
 const User = require("./models/user");
@@ -17,16 +17,6 @@ app.use(express.json());
 
 const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
-class UsersByNameIndex extends AbstractIndexCreationTask {
-  constructor() {
-    super();
-    this.map = "docs.Users.Select(user => ({ userName: user.userName }))";
-    this.index("userName", "Search");
-  }
-}
-
-// Создание индекса при запуске приложения
-new UsersByNameIndex().execute(store);
 
 app.get("/", async (req, res) => {
   res.send("hello");
