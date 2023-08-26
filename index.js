@@ -336,6 +336,8 @@ app.get("/search_users", async (req, res) => {
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: "An error occurred" });
+  } finally {
+    session.close();
   }
 });
 app.listen(port, () => {
