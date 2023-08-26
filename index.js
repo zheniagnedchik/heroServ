@@ -335,11 +335,15 @@ app.get("/search_users", async (req, res) => {
       .all();
     res.json(users);
   } catch (err) {
+    console.log("🚀 ~ file: index.js:338 ~ app.get ~ err:", err);
     res.status(500).json({ error: "An error occurred" });
   } finally {
-    session.close();
+    if (session && typeof session.close === "function") {
+      session.close();
+    }
   }
 });
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
