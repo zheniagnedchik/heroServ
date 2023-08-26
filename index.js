@@ -311,6 +311,18 @@ app.post("/add-about", async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 });
+
+app.get("/users", async (req, res) => {
+  const session = store.openSession();
+  try {
+    const users = await session.query({ collection: "Users" }).all();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "An error occurred" });
+  } finally {
+    session.close();
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
