@@ -339,7 +339,7 @@ app.get("/search_users", async (req, res) => {
     console.log("🚀 ~ file: index.js:339 ~ app.get ~ err:", err);
     res.status(500).json({ error: "An error occurred" });
   } finally {
-    session.close();
+    // session.close();
   }
 });
 
