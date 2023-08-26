@@ -330,7 +330,7 @@ app.get("/search_users", async (req, res) => {
     const { searchTerm } = req.query;
 
     const users = await session
-      .query({ indexName: "UserObjectsDynamicIndex" })
+      .query({ indexName: "Auto/Users/Byemail" })
       .search("userName", searchTerm)
       .all();
 
