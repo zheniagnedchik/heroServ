@@ -17,6 +17,16 @@ app.use(express.json());
 
 const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
+class UsersByNameIndex extends AbstractIndexCreationTask {
+  constructor() {
+    super();
+    this.map = "docs.Users.Select(user => ({ userName: user.userName }))";
+    this.index("userName", "Search");
+  }
+}
+
+// Создание индекса при запуске приложения
+new UsersByNameIndex().execute(store);
 
 app.get("/", async (req, res) => {
   res.send("hello");
@@ -343,23 +353,6 @@ app.get("/search_users", async (req, res) => {
     }
   }
 });
-
-(async () => {
-  const session = store.openSession();
-
-  try {
-    await session
-      .query({
-        indexName: "UserIndex",
-        query: "from Users as u where search(u.userName, $searchTerm)",
-      })
-      .all();
-  } catch (err) {
-    console.log("err", err);
-  } finally {
-    session.close();
-  }
-})();
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
