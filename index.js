@@ -336,6 +336,7 @@ app.get("/search_users", async (req, res) => {
 
     res.json(users);
   } catch (err) {
+    console.log("🚀 ~ file: index.js:339 ~ app.get ~ err:", err);
     res.status(500).json({ error: "An error occurred" });
   } finally {
     session.close();
