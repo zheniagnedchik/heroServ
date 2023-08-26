@@ -354,6 +354,8 @@ app.get("/search_users", async (req, res) => {
         query: "from Users as u where search(u.userName, $searchTerm)",
       })
       .all();
+  } catch (err) {
+    console.log(err);
   } finally {
     session.close();
   }
