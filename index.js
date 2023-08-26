@@ -313,6 +313,7 @@ app.post("/add-about", async (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
+  console.log("users");
   const session = store.openSession();
   try {
     const users = await session.query({ collection: "Users" }).all();
@@ -320,7 +321,7 @@ app.get("/users", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "An error occurred" });
   } finally {
-    session.close();
+    // session.close();
   }
 });
 app.get("/search_users", async (req, res) => {
