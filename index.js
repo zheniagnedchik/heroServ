@@ -323,6 +323,21 @@ app.get("/users", async (req, res) => {
     session.close();
   }
 });
+app.get("/search_users", async (req, res) => {
+  const session = store.openSession();
+  try {
+    const { searchTerm } = req.query;
+    const users = await session
+      .query({ indexName: "UserIndex" })
+      .search("Search", searchTerm)
+      .all();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "An error occurred" });
+  } finally {
+    session.close();
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
