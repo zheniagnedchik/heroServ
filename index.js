@@ -328,6 +328,7 @@ app.get("/search_users", async (req, res) => {
   const session = store.openSession();
   try {
     const { searchTerm } = req.query;
+    console.log("🚀 ~ file: index.js:331 ~ app.get ~ searchTerm:", searchTerm);
     const users = await session
       .query({ indexName: "UserIndex" })
       .search("Search", searchTerm)
