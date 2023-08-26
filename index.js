@@ -333,6 +333,7 @@ app.get("/search_users", async (req, res) => {
       .query({ indexName: "UserIndex" })
       .search("Search", searchTerm)
       .all();
+    console.log(users);
     res.json(users);
   } catch (err) {
     console.log("🚀 ~ file: index.js:338 ~ app.get ~ err:", err);
