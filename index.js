@@ -328,20 +328,22 @@ app.get("/search_users", async (req, res) => {
   const session = store.openSession();
   try {
     const { searchTerm } = req.query;
-    console.log("🚀 ~ file: index.js:331 ~ app.get ~ searchTerm:", searchTerm);
+
     const users = await session
-      .query({ indexName: "UserObjectsDynamicIndex" })
+      .query({
+        indexName: "UserObjectsDynamicIndex",
+        documentType: "User", // Укажите имя типа документа
+      })
       .search("userName", searchTerm)
       .all();
-    console.log(users);
+    console.log("🚀 ~ file: index.js:339 ~ app.get ~ users:", users);
+
     res.json(users);
   } catch (err) {
-    console.log("🚀 ~ file: index.js:338 ~ app.get ~ err:", err);
+    console.log("🚀 ~ file: index.js:343 ~ app.get ~ err:", err);
     res.status(500).json({ error: "An error occurred" });
   } finally {
-    if (session && typeof session.close === "function") {
-      session.close();
-    }
+    session.close();
   }
 });
 
