@@ -344,6 +344,21 @@ app.get("/search_users", async (req, res) => {
   }
 });
 
+(async () => {
+  const session = store.openSession();
+
+  try {
+    await session
+      .query({
+        indexName: "UserIndex",
+        query: "from Users as u where search(u.userName, $searchTerm)",
+      })
+      .all();
+  } finally {
+    session.close();
+  }
+})();
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
