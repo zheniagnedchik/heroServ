@@ -355,7 +355,7 @@ app.get("/search_users", async (req, res) => {
       })
       .all();
   } catch (err) {
-    console.log(err);
+    console.log("err", err);
   } finally {
     session.close();
   }
