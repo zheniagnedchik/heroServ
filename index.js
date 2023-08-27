@@ -344,7 +344,32 @@ app.get("/search_users", async (req, res) => {
     res.status(500).send("Server error.");
   }
 });
+app.post("/get_user", async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Не указан email." });
+  }
+  const session = store.openSession();
+  try {
+    // Выполняем запрос для получения пользователя по email
+    const user = await session
+      .query({ collection: "Users" })
+      .whereEquals("email", email)
+      .firstOrNull();
 
+    if (user) {
+      res.json(user);
+    } else {
+      res
+        .status(404)
+        .json({ message: "Пользователь с таким email не найден." });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Ошибка при получении пользователя." });
+  } finally {
+    session.close();
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
