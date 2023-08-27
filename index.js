@@ -325,25 +325,23 @@ app.get("/users", async (req, res) => {
   }
 });
 app.get("/search_users", async (req, res) => {
-  const session = store.openSession();
+  const queryTerm = req.query.userName;
+
+  if (!queryTerm) {
+    return res.status(400).send("Parameter 'userName' is required.");
+  }
+
   try {
-    const { searchTerm } = req.query;
-
-    const users = await session
-      .query({
-        indexName: "UserObjectsDynamicIndex",
-        documentType: "User", // Укажите имя типа документа
-      })
-      .search("userName", searchTerm)
+    const session = store.openSession();
+    const results = await session
+      .query({ indexName: "Users_ByCertainFields" })
+      .search("UserName", `*${queryTerm}*`) // Используем wildcard поиск
       .all();
-    console.log("🚀 ~ file: index.js:339 ~ app.get ~ users:", users);
 
-    res.json(users);
-  } catch (err) {
-    console.log("🚀 ~ file: index.js:343 ~ app.get ~ err:", err);
-    res.status(500).json({ error: "An error occurred" });
-  } finally {
-    session.close();
+    res.json(results);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).send("Server error.");
   }
 });
 
