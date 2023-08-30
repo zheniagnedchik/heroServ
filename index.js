@@ -370,6 +370,49 @@ app.post("/get_user", async (req, res) => {
     session.close();
   }
 });
+app.post("/api/subscribe", async (req, res) => {
+  const { userId, targetUserId } = req.body;
+
+  try {
+    const session = store.openSession();
+    const user = await session.load(userId);
+    const targetUser = await session.load(targetUserId);
+    user.subscriptions.push(targetUserId);
+    targetUser.subscribers.push(userId);
+    await session.saveChanges();
+    res.json({ message: "Subscribed successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+app.post("/api/subscriptions", async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const session = store.openSession();
+    const user = await session.load(userId);
+    res.json({ subscriptions: user.subscriptions });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+app.post("/api/users/batch", async (req, res) => {
+  const { userIds } = req.body;
+
+  try {
+    const session = store.openSession();
+
+    // Подразумевается, что у вас есть индекс, индексирующий документы пользователей по Id
+    const users = await session
+      .query({ collection: "Users" })
+      .whereIn("id", userIds)
+      .selectFields(["userName", "avatar", "id", "role"])
+      .all();
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
