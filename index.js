@@ -320,8 +320,6 @@ app.get("/users", async (req, res) => {
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: "An error occurred" });
-  } finally {
-    session.close();
   }
 });
 app.get("/search_users", async (req, res) => {
@@ -342,8 +340,6 @@ app.get("/search_users", async (req, res) => {
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).send("Server error.");
-  } finally {
-    session.close();
   }
 });
 app.post("/get_user", async (req, res) => {
@@ -368,8 +364,6 @@ app.post("/get_user", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ message: "Ошибка при получении пользователя." });
-  } finally {
-    session.close();
   }
 });
 app.post("/api/subscribe", async (req, res) => {
@@ -385,8 +379,6 @@ app.post("/api/subscribe", async (req, res) => {
     res.json({ message: "Subscribed successfully" });
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
-  } finally {
-    session.close();
   }
 });
 app.post("/api/unsubscribe", async (req, res) => {
@@ -406,8 +398,6 @@ app.post("/api/unsubscribe", async (req, res) => {
     res.json({ message: "Unsubscribed successfully" });
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
-  } finally {
-    session.close();
   }
 });
 app.post("/api/subscriptions", async (req, res) => {
