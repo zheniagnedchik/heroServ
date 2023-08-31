@@ -420,7 +420,7 @@ app.post("/api/users/batch", async (req, res) => {
     const users = await session
       .query({ collection: "Users" })
       .whereIn("id", userIds)
-      .selectFields(["userName", "avatar", "id", "role"])
+      .selectFields(["userName", "avatar", "id", "role", "email"])
       .all();
 
     res.json(users);
