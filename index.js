@@ -438,7 +438,7 @@ app.post("/api/users/batch_events", async (req, res) => {
     const users = await session
       .query({ collection: "Users" })
       .whereIn("id", userIds)
-      .selectFields(["userName", "avatar", "id", "role", "email, events"])
+      .selectFields(["userName", "avatar", "id", "role", "email", "events"])
       .all();
 
     res.json(users);
