@@ -428,6 +428,23 @@ app.post("/api/users/batch", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
+app.post("/add_event", async (req, res) => {
+  const { userId, eventDescription } = req.body;
+  try {
+    const session = store.openSession();
+    const user = await session.load(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+    user.events = user.events || [];
+    user.events.push(eventDescription);
+    await session.saveChanges();
+    return res.json({ message: "Объект добавлен в поле events пользователя." });
+  } catch (error) {
+    console.error("Произошла ошибка:", error);
+    return res.status(500).json({ message: "Произошла ошибка на сервере" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
