@@ -258,8 +258,9 @@ app.post("/upload", upload.single("file"), async (req, res) => {
               "Файл и обложка успешно загружены и путь сохранен в базе данных."
             );
             res.json({
-              message:
-                "Файл и обложка успешно загружены и путь сохранен в базе данных.",
+              uri: path.join(folder, testName[1]),
+              type: "video",
+              thumbnail: thumbnailUri,
             });
           } catch (error) {
             console.error(error);
