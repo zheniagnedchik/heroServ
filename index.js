@@ -428,6 +428,24 @@ app.post("/api/users/batch", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
+app.post("/api/users/batch_events", async (req, res) => {
+  const { userIds } = req.body;
+
+  try {
+    const session = store.openSession();
+
+    // Подразумевается, что у вас есть индекс, индексирующий документы пользователей по Id
+    const users = await session
+      .query({ collection: "Users" })
+      .whereIn("id", userIds)
+      .selectFields(["userName", "avatar", "id", "role", "email, events"])
+      .all();
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 app.post("/add_event", async (req, res) => {
   const { userId, eventDescription } = req.body;
   try {
