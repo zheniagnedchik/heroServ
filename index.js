@@ -463,6 +463,22 @@ app.post("/add_event", async (req, res) => {
     return res.status(500).json({ message: "Произошла ошибка на сервере" });
   }
 });
+app.post("/add_eat", async (req, res) => {
+  const { userId, eat } = req.body;
+  try {
+    const session = store.openSession();
+    const user = await session.load(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+    user.events.push(eat);
+    await session.saveChanges();
+    return res.json({ message: "Объект добавлен в поле events пользователя." });
+  } catch (error) {
+    console.error("Произошла ошибка:", error);
+    return res.status(500).json({ message: "Произошла ошибка на сервере" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
