@@ -382,6 +382,39 @@ app.post("/api/subscribe", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
+app.post("/add_client", async (req, res) => {
+  const { userId, targetUserId } = req.body;
+
+  try {
+    const session = store.openSession();
+    const user = await session.load(userId);
+    // const targetUser = await session.load(targetUserId);
+    user.clients.push(targetUserId);
+    // targetUser.subscribers.push(userId);
+    await session.saveChanges();
+    res.json({ message: "Subscribed successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+app.post("/remove_client", async (req, res) => {
+  const { userId, targetUserId } = req.body;
+
+  try {
+    const session = store.openSession();
+    const user = await session.load(userId);
+    // const targetUser = await session.load(targetUserId);
+    // Удаление из списка подписок и подписчиков
+    user.clients = user.user.clients.filter((id) => id !== targetUserId);
+    // targetUser.subscribers = targetUser.subscribers.filter(
+    //   (id) => id !== userId
+    // );
+    await session.saveChanges();
+    res.json({ message: "Unsubscribed successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 app.post("/api/unsubscribe", async (req, res) => {
   const { userId, targetUserId } = req.body;
 
