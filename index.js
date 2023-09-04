@@ -39,8 +39,13 @@ app.post("/register", async (req, res) => {
       avatar,
       about,
       userName,
+      subscriptions,
+      subscribers,
+      events,
+      eat,
+      clients,
+      treners,
     } = req.body;
-    console.log(req.body);
     const session = store.openSession();
     const existingUser = await session
       .query(User)
@@ -69,19 +74,26 @@ app.post("/register", async (req, res) => {
       thumbnails,
       avatar,
       about,
-      userName
+      userName,
+      subscriptions,
+      subscribers,
+      events,
+      eat,
+      clients,
+      treners
     );
+
     await session.store(newUser);
     await session.saveChanges();
 
     // Генерация и выдача JWT токена
     const token = jwt.sign({ email }, "secret_key");
     res.status(201).json({
+      token: token,
       message: "User registered successfully",
-      token,
+
       user: {
         email,
-        hashedPassword,
         height,
         weight,
         gender,
@@ -94,6 +106,13 @@ app.post("/register", async (req, res) => {
         avatar,
         about,
         userName,
+        subscriptions,
+        subscribers,
+        events,
+        eat,
+        clients,
+        treners,
+        id: newUser.id,
       },
     });
   } catch (error) {

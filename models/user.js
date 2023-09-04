@@ -14,7 +14,13 @@ class User {
     thumbnails,
     avatar,
     about,
-    userName
+    userName,
+    subscriptions,
+    subscribers,
+    events,
+    eat,
+    clients,
+    treners
   ) {
     this.email = email;
     this.passwordHash = passwordHash;
@@ -30,6 +36,11 @@ class User {
     this.avatar = avatar;
     this.about = about;
     this.userName = userName;
+    this.subscriptions = subscriptions;
+    (this.subscribers = subscribers), (this.events = events);
+    this.eat = eat;
+    this.clients = clients;
+    this.treners = treners;
   }
 }
 
