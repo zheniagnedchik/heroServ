@@ -388,9 +388,9 @@ app.post("/add_client", async (req, res) => {
   try {
     const session = store.openSession();
     const user = await session.load(userId);
-    // const targetUser = await session.load(targetUserId);
+    const targetUser = await session.load(targetUserId);
     user.clients.push(targetUserId);
-    // targetUser.subscribers.push(userId);
+    targetUser.treners.push(userId);
     await session.saveChanges();
     res.json({ message: "Subscribed successfully" });
   } catch (error) {
@@ -403,12 +403,10 @@ app.post("/remove_client", async (req, res) => {
   try {
     const session = store.openSession();
     const user = await session.load(userId);
-    // const targetUser = await session.load(targetUserId);
+    const targetUser = await session.load(targetUserId);
     // Удаление из списка подписок и подписчиков
-    user.clients = user.user.clients.filter((id) => id !== targetUserId);
-    // targetUser.subscribers = targetUser.subscribers.filter(
-    //   (id) => id !== userId
-    // );
+    user.clients = user.clients.filter((id) => id !== targetUserId);
+    targetUser.treners = targetUser.treners.filter((id) => id !== userId);
     await session.saveChanges();
     res.json({ message: "Unsubscribed successfully" });
   } catch (error) {
