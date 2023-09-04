@@ -439,7 +439,15 @@ app.post("/api/users/batch_events", async (req, res) => {
     const users = await session
       .query({ collection: "Users" })
       .whereIn("id", userIds)
-      .selectFields(["userName", "avatar", "id", "role", "email", "events"])
+      .selectFields([
+        "userName",
+        "avatar",
+        "id",
+        "role",
+        "email",
+        "events",
+        "eat",
+      ])
       .all();
 
     res.json(users);
@@ -471,7 +479,7 @@ app.post("/add_eat", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
-    user.events.push(eat);
+    user.eat.push(eat);
     await session.saveChanges();
     return res.json({ message: "Объект добавлен в поле events пользователя." });
   } catch (error) {
