@@ -11,7 +11,7 @@ const path = require("path");
 const Post = require("../models/post");
 const URI = "http://64.226.88.96";
 const FormData = require("form-data");
-const { default: axios } = require("axios");
+const axios = require("axios");
 
 const CLOUDFLARE_API_ENDPOINT =
   "https://api.cloudflare.com/client/v4/accounts/61c83c9b6d34f2c1445f0ccd6f8a160a/stream/copy";
