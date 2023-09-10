@@ -6,9 +6,18 @@ const ffmpeg = require("fluent-ffmpeg");
 const multer = require("multer");
 const store = new DocumentStore("http://64.226.88.96:8080", "Post");
 store.initialize();
+const fs = require("fs");
 const path = require("path");
 const Post = require("../models/post");
 const URI = "http://64.226.88.96";
+const FormData = require("form-data");
+const { default: axios } = require("axios");
+
+const CLOUDFLARE_API_ENDPOINT =
+  "https://api.cloudflare.com/client/v4/accounts/61c83c9b6d34f2c1445f0ccd6f8a160a/stream/copy";
+const API_TOKEN = "Ky8u-YkLKSef_xga_omrGPZGPLThHTMU-kkeMrXF";
+const CLOUDFLARE_API_ENDPOINT_IMG =
+  "https://api.cloudflare.com/client/v4/accounts/61c83c9b6d34f2c1445f0ccd6f8a160a/images/v1";
 
 async function generateVideoThumbnail(
   videoPath,
@@ -27,6 +36,57 @@ async function generateVideoThumbnail(
         folder: thumbnailPath,
       });
   });
+}
+async function uploadVideo(videoUrl, videoName) {
+  const body = {
+    url: videoUrl,
+    meta: {
+      name: videoName,
+    },
+  };
+  const response = await fetch(CLOUDFLARE_API_ENDPOINT, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    return data;
+  } else {
+    throw new Error(data.errors);
+  }
+}
+
+async function uploadImage() {
+  const headers = {
+    Authorization: `Bearer ${API_TOKEN}`, // Замените 'undefined' своим реальным токеном
+  };
+
+  const form = new FormData();
+
+  // Предполагается, что у вас есть файл с именем 'image.jpg' в вашей директории, который вы хотите загрузить
+  form.append("file", fs.createReadStream("photo/1694344041529.png"));
+
+  // Добавьте другие данные формы, если это необходимо
+  // form.append('metadata', ...);
+  // form.append('requireSignedURLs', ...);
+
+  try {
+    const response = await axios.post(CLOUDFLARE_API_ENDPOINT_IMG, form, {
+      headers: {
+        ...headers,
+        ...form.getHeaders(),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при загрузке изображения:", error);
+  }
 }
 
 exports.uploudFileToPost = async (req, res) => {
@@ -56,9 +116,16 @@ exports.uploudFileToPost = async (req, res) => {
           //   type: "video",
           //   thumbnail: thumbnailUri,
           // });
-          const prev = `${URI}/${thumbnailUri}`;
-          const uri = `${URI}/${path.join(folder, testName[1])}`;
+          // const prev = `${URI}/${thumbnailUri}`;
+          const altUri = `${URI}/${path.join(folder, testName[1])}`;
+          const data = await uploadVideo(
+            `${URI}/${path.join(folder, testName[1])}`,
+            name
+          );
+          const uri = data.result.playback.hls;
+          const prev = data.result.thumbnail;
           const description = "";
+
           const newPost = new Post(
             userId,
             prev,
@@ -66,8 +133,10 @@ exports.uploudFileToPost = async (req, res) => {
             description,
             contentType,
             type,
-            userName
+            userName,
+            altUri
           );
+
           await session.store(newPost);
           await session.saveChanges();
 
@@ -84,8 +153,10 @@ exports.uploudFileToPost = async (req, res) => {
           res.status(500).json({ error: "Ошибка при создании обложки видео." });
         }
       } else {
+        const dataImg = await uploadImage("mfekf", { name: "kdemfk" });
         const prev = ``;
-        const uri = `${URI}/${path.join(folder, testName[1])}`;
+        const uri = dataImg.result.variants[0];
+        const altURI = `${URI}/${path.join(folder, testName[1])}`;
         const type = "photo";
         const description = "";
         const newPost = new Post(
@@ -95,7 +166,8 @@ exports.uploudFileToPost = async (req, res) => {
           description,
           contentType,
           type,
-          userName
+          userName,
+          altURI
         );
         await session.store(newPost);
         await session.saveChanges();
