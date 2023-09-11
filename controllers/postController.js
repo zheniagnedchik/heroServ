@@ -11,7 +11,7 @@ const path = require("path");
 const Post = require("../models/post");
 const URI = "http://64.226.88.96";
 const FormData = require("form-data");
-// const axios = require("axios");
+const axios = require("axios");
 
 const CLOUDFLARE_API_ENDPOINT =
   "https://api.cloudflare.com/client/v4/accounts/61c83c9b6d34f2c1445f0ccd6f8a160a/stream/copy";
@@ -63,26 +63,26 @@ async function uploadVideo(videoUrl, videoName) {
 }
 
 async function uploadImage(file) {
-  // const headers = {
-  //   Authorization: `Bearer ${API_TOKEN}`, // Замените 'undefined' своим реальным токеном
-  // };
-  // const form = new FormData();
-  // // Предполагается, что у вас есть файл с именем 'image.jpg' в вашей директории, который вы хотите загрузить
-  // form.append("file", fs.createReadStream(file));
-  // // Добавьте другие данные формы, если это необходимо
-  // // form.append('metadata', ...);
-  // // form.append('requireSignedURLs', ...);
-  // try {
-  //   const response = await axios.post(CLOUDFLARE_API_ENDPOINT_IMG, form, {
-  //     headers: {
-  //       ...headers,
-  //       ...form.getHeaders(),
-  //     },
-  //   });
-  //   return response.data;
-  // } catch (error) {
-  //   console.error("Ошибка при загрузке изображения:", error);
-  // }
+  const headers = {
+    Authorization: `Bearer ${API_TOKEN}`, // Замените 'undefined' своим реальным токеном
+  };
+  const form = new FormData();
+  // Предполагается, что у вас есть файл с именем 'image.jpg' в вашей директории, который вы хотите загрузить
+  form.append("file", fs.createReadStream(file));
+  // Добавьте другие данные формы, если это необходимо
+  // form.append('metadata', ...);
+  // form.append('requireSignedURLs', ...);
+  try {
+    const response = await axios.post(CLOUDFLARE_API_ENDPOINT_IMG, form, {
+      headers: {
+        ...headers,
+        ...form.getHeaders(),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при загрузке изображения:", error);
+  }
 }
 
 exports.uploudFileToPost = async (req, res) => {
