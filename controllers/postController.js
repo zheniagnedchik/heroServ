@@ -45,21 +45,19 @@ async function uploadVideo(videoUrl, videoName) {
       name: videoName,
     },
   };
-  const response = await fetch(CLOUDFLARE_API_ENDPOINT, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-  });
 
-  const data = await response.json();
-  console.log(data);
-  if (response.ok) {
-    return data;
-  } else {
-    console.log("err");
+  try {
+    const response = await axios.post(CLOUDFLARE_API_ENDPOINT, body, {
+      headers: {
+        Authorization: `Bearer ${API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error.response.data); // This will log the error response from the server
   }
 }
 
