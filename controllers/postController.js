@@ -138,11 +138,11 @@ exports.uploudFileToPost = async (req, res) => {
           console.log(
             "Файл и обложка успешно загружены и путь сохранен в базе данных."
           );
-          //   res.json({
-          //     uri: path.join(folder, testName[1]),
-          //     type: "video",
-          //     thumbnail: thumbnailUri,
-          //   });
+          res.json({
+            uri: data.result.playback.hls,
+            type: "video",
+            thumbnail: data.result.thumbnail,
+          });
         } catch (error) {
           console.error(error);
           res.status(500).json({ error: "Ошибка при создании обложки видео." });
