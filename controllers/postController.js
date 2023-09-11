@@ -38,6 +38,7 @@ async function generateVideoThumbnail(
   });
 }
 async function uploadVideo(videoUrl, videoName) {
+  console.log(videoUrl);
   const body = {
     url: videoUrl,
     meta: {
@@ -54,11 +55,11 @@ async function uploadVideo(videoUrl, videoName) {
   });
 
   const data = await response.json();
-
+  console.log(data);
   if (response.ok) {
     return data;
   } else {
-    throw new Error(data.errors);
+    console.log("err");
   }
 }
 
@@ -102,11 +103,11 @@ exports.uploudFileToPost = async (req, res) => {
         const thumbnailPath = path.join(__dirname, folder); // Папка для сохранения обложки
         const thumbnailFullPath = path.join(thumbnailPath, thumbnailFileName);
         try {
-          await generateVideoThumbnail(
-            videoPath,
-            thumbnailPath,
-            thumbnailFileName
-          );
+          // await generateVideoThumbnail(
+          //   videoPath,
+          //   thumbnailPath,
+          //   thumbnailFileName
+          // );
           // user.photo.push({
           //   uri: path.join(folder, testName[1]),
           //   type: "video",
