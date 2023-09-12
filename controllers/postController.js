@@ -240,6 +240,7 @@ exports.getPosts = async (req, res) => {
     }
 
     const session = store.openSession();
+    const sessionUser = storeUsers.openSession();
 
     // Получение постов от подписчиков
     const feedItems = await session
@@ -251,7 +252,7 @@ exports.getPosts = async (req, res) => {
       .all();
 
     // Получение информации о пользователях, которые создали посты
-    const users = await session
+    const users = await sessionUser
       .query({ collection: "Users" })
       .whereIn(
         "id",
@@ -262,6 +263,7 @@ exports.getPosts = async (req, res) => {
     // Добавление URL аватара к каждому посту
     const feedItemsWithAvatars = feedItems.map((post) => {
       const user = users.find((u) => u.id === post.userId);
+      const test = user;
       return {
         ...post,
         userAvatarUrl: user ? user.avatar : null, // предполагается, что у объекта пользователя есть поле avatarUrl
