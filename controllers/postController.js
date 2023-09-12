@@ -5,7 +5,9 @@ const User = require("../models/user");
 const ffmpeg = require("fluent-ffmpeg");
 const multer = require("multer");
 const store = new DocumentStore("http://64.226.88.96:8080", "Post");
+const storeUsers = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
+storeUsers.initialize();
 const fs = require("fs");
 const path = require("path");
 const Post = require("../models/post");
@@ -83,12 +85,24 @@ async function uploadImage(file) {
     console.error("Ошибка при загрузке изображения:", error);
   }
 }
-
+async function saveUser(user) {
+  const session = storeUsers.openSession();
+  await session.store(user);
+  await session.saveChanges();
+}
+async function findUserByEmail(email) {
+  const session = storeUsers.openSession();
+  const user = await session
+    .query(User)
+    .whereEquals("email", email)
+    .firstOrNull();
+  return user;
+}
 exports.uploudFileToPost = async (req, res) => {
   console.log(req);
   try {
     const { email, folder, type, userId, contentType, userName } = req.body; // Email пользователя
-    // const user = await findUserByEmail(email);
+    const user = await findUserByEmail(email);
     const session = store.openSession();
     const name = req.file.originalname;
     const testName = name.split("_");
@@ -172,10 +186,10 @@ exports.uploudFileToPost = async (req, res) => {
         // });
       }
     } else {
-      //   user[folder] = path.join(folder, testName[1]);
+      const dataImg = await uploadImage(path.join(folder, testName[1]));
+      user[folder] = dataImg.result.variants[0];
+      await saveUser(user);
     }
-
-    // await saveUser(user);
     res.json({
       message: "Изображение успешно загружено и путь сохранен в базе данных.",
     });
@@ -187,6 +201,33 @@ exports.uploudFileToPost = async (req, res) => {
   }
 };
 
+// exports.getPosts = async (req, res) => {
+//   try {
+//     const offset = parseInt(req.query.offset) || 0;
+//     const limit = parseInt(req.query.limit) || 10;
+
+//     const followingUserIds = req.body.followingUserIds; // Список ID пользователей, на которых подписан клиент
+
+//     if (!followingUserIds || !followingUserIds.length) {
+//       return res.status(400).send("followingUserIds are required");
+//     }
+
+//     const session = store.openSession();
+
+//     // Получение постов от подписчиков
+//     const feedItems = await session
+//       .query({ collection: "Posts" })
+//       .whereIn("userId", followingUserIds)
+//       .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
+//       .skip(offset)
+//       .take(limit)
+//       .all();
+
+//     res.send(feedItems);
+//   } catch (error) {
+//     res.send({ success: false, message: error.message });
+//   }
+// };
 exports.getPosts = async (req, res) => {
   try {
     const offset = parseInt(req.query.offset) || 0;
@@ -209,7 +250,25 @@ exports.getPosts = async (req, res) => {
       .take(limit)
       .all();
 
-    res.send(feedItems);
+    // Получение информации о пользователях, которые создали посты
+    const users = await session
+      .query({ collection: "Users" })
+      .whereIn(
+        "id",
+        feedItems.map((item) => item.userId)
+      )
+      .all();
+
+    // Добавление URL аватара к каждому посту
+    const feedItemsWithAvatars = feedItems.map((post) => {
+      const user = users.find((u) => u.id === post.userId);
+      return {
+        ...post,
+        userAvatarUrl: user ? user.avatar : null, // предполагается, что у объекта пользователя есть поле avatarUrl
+      };
+    });
+
+    res.send(feedItemsWithAvatars);
   } catch (error) {
     res.send({ success: false, message: error.message });
   }
