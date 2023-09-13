@@ -266,7 +266,8 @@ exports.getPosts = async (req, res) => {
       const test = user;
       return {
         ...post,
-        userAvatarUrl: user ? user.avatar : null, // предполагается, что у объекта пользователя есть поле avatarUrl
+        userAvatarUrl: user ? user.avatar : null,
+        email: user.email, // предполагается, что у объекта пользователя есть поле avatarUrl
       };
     });
 
