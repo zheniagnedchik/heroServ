@@ -230,8 +230,8 @@ exports.uploudFileToPost = async (req, res) => {
 // };
 exports.getPosts = async (req, res) => {
   try {
-    const offset = parseInt(req.query.offset) || 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const offset = parseInt(req.body.offset) || 0;
+    const limit = parseInt(req.body.limit) || 10;
 
     const followingUserIds = req.body.followingUserIds; // Список ID пользователей, на которых подписан клиент
 
