@@ -53,6 +53,7 @@ app.post(
   postController.uploudFileToPost
 );
 app.post("/get_feeds", postController.getPosts);
+app.post("/toggle_like", postController.toggleLike);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -276,3 +276,26 @@ exports.getPosts = async (req, res) => {
     res.send({ success: false, message: error.message });
   }
 };
+exports.toggleLike = async (req, res) => {
+  const { postId, userId } = req.body;
+  const session = store.openSession();
+  try {
+    const post = await session.load(postId);
+    if (!post) {
+      return res.status(404).send({ success: false });
+    }
+    const likesIndex = post.likes.indexOf(userId);
+    if (likesIndex !== -1) {
+      post.likes.splice(likesIndex, 1);
+    } else {
+      post.likes.push(userId);
+    }
+    await session.saveChanges();
+    res.send({ success: true });
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).send({ success: false });
+  } finally {
+    session.release();
+  }
+};
