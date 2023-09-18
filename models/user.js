@@ -20,7 +20,8 @@ class User {
     events,
     eat,
     clients,
-    treners
+    treners,
+    nikName
   ) {
     this.email = email;
     this.passwordHash = passwordHash;
@@ -41,6 +42,7 @@ class User {
     this.eat = eat;
     this.clients = clients;
     this.treners = treners;
+    this.nikName = nikName;
   }
 }
 
