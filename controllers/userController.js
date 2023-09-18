@@ -307,7 +307,42 @@ exports.addAbout = async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 };
-
+exports.changeUserName = async (req, res) => {
+  try {
+    const { email, userName } = req.body;
+    const user = await findUserByEmail(email);
+    if (user) {
+      user.userName = userName;
+      await saveUser(user);
+      res.status(200).json({ message: "информация о пользователе добавлена" });
+    } else {
+      res
+        .status(404)
+        .json({ error: `Пользователь с email ${email} не найден` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Произошла ошибка сервера" });
+  }
+};
+exports.changeNikName = async (req, res) => {
+  try {
+    const { email, nikName } = req.body;
+    const user = await findUserByEmail(email);
+    if (user) {
+      user.nikName = nikName;
+      await saveUser(user);
+      res.status(200).json({ message: "информация о пользователе добавлена" });
+    } else {
+      res
+        .status(404)
+        .json({ error: `Пользователь с email ${email} не найден` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Произошла ошибка сервера" });
+  }
+};
 exports.users = async (req, res) => {
   console.log("users");
   const session = store.openSession();

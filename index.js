@@ -54,6 +54,8 @@ app.post(
 );
 app.post("/get_feeds", postController.getPosts);
 app.post("/toggle_like", postController.toggleLike);
+app.post("/change_user_name", userController.changeUserName);
+app.post("/change_nik_name", userController.changeNikName);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
