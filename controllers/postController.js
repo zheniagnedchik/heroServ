@@ -263,11 +263,11 @@ exports.getPosts = async (req, res) => {
     // Добавление URL аватара к каждому посту
     const feedItemsWithAvatars = feedItems.map((post) => {
       const user = users.find((u) => u.id === post.userId);
-      const test = user;
       return {
         ...post,
         userAvatarUrl: user ? user.avatar : null,
-        email: user.email, // предполагается, что у объекта пользователя есть поле avatarUrl
+        email: user.email,
+        nikName: user.nikName, // предполагается, что у объекта пользователя есть поле avatarUrl
       };
     });
 
