@@ -165,6 +165,50 @@ exports.addService = async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 };
+exports.updateService = async (req, res) => {
+  try {
+    const { email, service } = req.body;
+
+    if (!service.id) {
+      return res
+        .status(400)
+        .json({ error: "Не предоставлен ID услуги для обновления" });
+    }
+
+    const session = store.openSession();
+    const user = await session
+      .query({ collection: "Users" })
+      .whereEquals("email", email)
+      .firstOrNull();
+
+    if (user) {
+      const serviceIndex = user.services.findIndex((s) => s.id === service.id);
+
+      if (serviceIndex !== -1) {
+        user.services[serviceIndex] = service; // Обновляем услугу
+        await session.saveChanges();
+        res
+          .status(200)
+          .json({
+            message: `Сервис обновлен для пользователя с email ${email}`,
+          });
+      } else {
+        res
+          .status(404)
+          .json({
+            error: `Услуга с ID ${service.id} не найдена для пользователя с email ${email}`,
+          });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ error: `Пользователь с email ${email} не найден` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Произошла ошибка сервера" });
+  }
+};
 exports.getUser = async (req, res) => {
   try {
     const { email } = req.body;
