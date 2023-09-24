@@ -59,7 +59,8 @@ exports.findDialogs = async (req, res) => {
         ...post,
         userAvatarUrl: user ? user.avatar : null,
         email: user.email,
-        nikName: user.nikName, // предполагается, что у объекта пользователя есть поле avatarUrl
+        nikName: user.nikName,
+        userName: user.userName, // предполагается, что у объекта пользователя есть поле avatarUrl
       };
     });
     res.status(201).json({
