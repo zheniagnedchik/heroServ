@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
   console.log("New client connected");
   socket.on("join", (userId) => {
     socket.join(userId);
-    console.log("User $fuserId} joined room ${userId}");
+    console.log(`User ${userId} joined room ${userId}`);
   });
   socket.on("private_message", (message) => {
     console.log(message, "message");
