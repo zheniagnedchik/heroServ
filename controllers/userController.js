@@ -187,17 +187,13 @@ exports.updateService = async (req, res) => {
       if (serviceIndex !== -1) {
         user.services[serviceIndex] = service; // Обновляем услугу
         await session.saveChanges();
-        res
-          .status(200)
-          .json({
-            message: `Сервис обновлен для пользователя с email ${email}`,
-          });
+        res.status(200).json({
+          message: `Сервис обновлен для пользователя с email ${email}`,
+        });
       } else {
-        res
-          .status(404)
-          .json({
-            error: `Услуга с ID ${service.id} не найдена для пользователя с email ${email}`,
-          });
+        res.status(404).json({
+          error: `Услуга с ID ${service.id} не найдена для пользователя с email ${email}`,
+        });
       }
     } else {
       res

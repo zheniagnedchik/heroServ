@@ -4,7 +4,11 @@ const app = express();
 const userController = require("./controllers/userController");
 const postController = require("./controllers/postController");
 const multer = require("multer");
+const http = require("http");
+const socketIo = require("socket.io");
 
+const server = http.createServer(app);
+const io = socketIo(server);
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const name = file.originalname;
@@ -57,6 +61,6 @@ app.post("/toggle_like", postController.toggleLike);
 app.post("/change_user_name", userController.changeUserName);
 app.post("/change_nik_name", userController.changeNikName);
 app.post("/update_service", userController.updateService);
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
