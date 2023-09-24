@@ -61,6 +61,24 @@ app.post("/toggle_like", postController.toggleLike);
 app.post("/change_user_name", userController.changeUserName);
 app.post("/change_nik_name", userController.changeNikName);
 app.post("/update_service", userController.updateService);
+
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  socket.on("join", (userId) => {
+    socket.join(userId);
+    console.log("User $fuserId} joined room ${userId}");
+  });
+  socket.on("private_message", (message) => {
+    console.log(message, "message");
+    io.to(message.receiverId).emit("new_private_message", message);
+    // Сохраните ваше сообщение в базе данных здесь
+    // Например: saveMessageToDb(message);
+  });
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
