@@ -6,7 +6,8 @@ const ffmpeg = require("fluent-ffmpeg");
 const multer = require("multer");
 const store = new DocumentStore("http://64.226.88.96:8080", "Dialogs");
 store.initialize();
-
+const storeUsers = new DocumentStore("http://64.226.88.96:8080", "Users");
+storeUsers.initialize();
 const fs = require("fs");
 const path = require("path");
 const Post = require("../models/post");
@@ -30,17 +31,39 @@ exports.createDialog = async (req, res) => {
   }
 };
 exports.findDialogs = async (req, res) => {
-  const { userId } = req.body;
   try {
+    const { userId } = req.body;
     const session = store.openSession();
+    const sessionUser = storeUsers.openSession();
     const dialogs = await session
       .query({ collection: "Dialogs" })
       .whereIn("participants", [userId])
       .all();
-
-    console.log(dialogs);
+    const userIds = dialogs.map((item) => {
+      const list = item.participants;
+      const filter = list.filter((el) => el !== userId);
+      return filter[0];
+    });
+    const users = await sessionUser
+      .query({ collection: "Users" })
+      .whereIn(
+        "id",
+        userIds.map((item) => item)
+      )
+      .all();
+    const dialogsUserData = dialogs.map((post) => {
+      const list = post.participants;
+      const filter = list.filter((el) => el !== userId);
+      const user = users.find((u) => u.id === filter[0]);
+      return {
+        ...post,
+        userAvatarUrl: user ? user.avatar : null,
+        email: user.email,
+        nikName: user.nikName, // предполагается, что у объекта пользователя есть поле avatarUrl
+      };
+    });
     res.status(201).json({
-      dialogs: dialogs,
+      dialogs: dialogsUserData,
     });
   } catch (err) {
     res.status(500).json({ error: err });
