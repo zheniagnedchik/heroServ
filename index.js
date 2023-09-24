@@ -3,6 +3,7 @@ const path = require("path");
 const app = express();
 const userController = require("./controllers/userController");
 const postController = require("./controllers/postController");
+const dialogController = require("./controllers/dialogController");
 const multer = require("multer");
 const http = require("http");
 const socketIo = require("socket.io");
@@ -61,6 +62,12 @@ app.post("/toggle_like", postController.toggleLike);
 app.post("/change_user_name", userController.changeUserName);
 app.post("/change_nik_name", userController.changeNikName);
 app.post("/update_service", userController.updateService);
+app.post("/create_dialog", dialogController.createDialog);
+app.post("/find_dialogs", dialogController.findDialogs);
+app.post(
+  "/find_dialogs_participiant",
+  dialogController.findDialogsByParticipiant
+);
 
 io.on("connection", (socket) => {
   console.log("New client connected");
