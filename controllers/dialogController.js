@@ -115,3 +115,23 @@ exports.saveMessage = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
+exports.setNew = async (req, res) => {
+  try {
+    const { dialogId } = req.body;
+    const session = store.openSession();
+    const dialog = await session.load(dialogId);
+    if (dialog && dialog.messages) {
+      dialog.messages.forEach((message) => {
+        if (message.new === true) {
+          message.new = false;
+        }
+      });
+      await session.saveChanges();
+      res.status(201).json({
+        success: true,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: err });
+  }
+};
