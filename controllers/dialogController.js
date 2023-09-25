@@ -98,7 +98,7 @@ exports.findDialogsByParticipiant = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
-exports.saveMessage = async () => {
+exports.saveMessage = async (req, res) => {
   try {
     const { dialogId, dataMessage } = req.body;
     const session = store.openSession();
