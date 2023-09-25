@@ -101,15 +101,17 @@ exports.findDialogsByParticipiant = async (req, res) => {
 exports.saveMessage = async () => {
   try {
     const { dialogId, dataMessage } = req.body;
-    // Находим документ по ID
+    const session = store.openSession();
     const dialog = await session.load(dialogId);
 
     if (dialog) {
-      // Добавляем новое сообщение в массив messages
       dialog.messages.push(dataMessage);
       await session.saveChanges();
+      res.status(201).json({
+        success: true,
+      });
     }
   } catch (error) {
-    console.error("Error updating document", error);
+    res.status(500).json({ error: err });
   }
 };
