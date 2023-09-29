@@ -246,6 +246,7 @@ exports.getPosts = async (req, res) => {
     const feedItems = await session
       .query({ collection: "Posts" })
       .whereIn("userId", followingUserIds)
+      .whereEquals("contentType", "media")
       .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
       .skip(offset)
       .take(limit)
