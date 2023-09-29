@@ -57,7 +57,8 @@ app.post(
   upload.single("file"),
   postController.uploudFileToPost
 );
-app.post("/get_feeds", postController.getPosts);
+app.post("/get_storys", postController.getPosts);
+app.post("/get_feeds", postController.getStorys);
 app.post("/toggle_like", postController.toggleLike);
 app.post("/change_user_name", userController.changeUserName);
 app.post("/change_nik_name", userController.changeNikName);

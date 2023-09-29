@@ -277,6 +277,55 @@ exports.getPosts = async (req, res) => {
     res.send({ success: false, message: error.message });
   }
 };
+exports.getStorys = async (req, res) => {
+  try {
+    const offset = parseInt(req.body.offset) || 0;
+    const limit = parseInt(req.body.limit) || 10;
+
+    const followingUserIds = req.body.followingUserIds; // Список ID пользователей, на которых подписан клиент
+
+    if (!followingUserIds || !followingUserIds.length) {
+      return res.status(400).send("followingUserIds are required");
+    }
+
+    const session = store.openSession();
+    const sessionUser = storeUsers.openSession();
+
+    // Получение постов от подписчиков
+    const feedItems = await session
+      .query({ collection: "Posts" })
+      .whereIn("userId", followingUserIds)
+      .whereEquals("contentType", "story")
+      .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
+      .skip(offset)
+      .take(limit)
+      .all();
+
+    // Получение информации о пользователях, которые создали посты
+    const users = await sessionUser
+      .query({ collection: "Users" })
+      .whereIn(
+        "id",
+        feedItems.map((item) => item.userId)
+      )
+      .all();
+
+    // Добавление URL аватара к каждому посту
+    const feedItemsWithAvatars = feedItems.map((post) => {
+      const user = users.find((u) => u.id === post.userId);
+      return {
+        ...post,
+        userAvatarUrl: user ? user.avatar : null,
+        email: user.email,
+        nikName: user.nikName, // предполагается, что у объекта пользователя есть поле avatarUrl
+      };
+    });
+
+    res.send(feedItemsWithAvatars);
+  } catch (error) {
+    res.send({ success: false, message: error.message });
+  }
+};
 exports.toggleLike = async (req, res) => {
   const { postId, userId } = req.body;
   const session = store.openSession();
