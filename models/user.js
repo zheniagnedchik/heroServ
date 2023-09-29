@@ -34,7 +34,7 @@ class User {
     this.services = services;
     this.age = age;
     this.thumbnails = thumbnails;
-    this.avatar = avatar;
+    this.avatar = "https://img.icons8.com/officel/280/user.png";
     this.about = about;
     this.userName = userName;
     this.subscriptions = subscriptions;
