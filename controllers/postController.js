@@ -349,3 +349,6 @@ exports.toggleLike = async (req, res) => {
     session.release();
   }
 };
+exports.test = async (req, res) => {
+  res.send({ version: "1.0.0" });
+};
