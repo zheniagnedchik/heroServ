@@ -72,7 +72,7 @@ app.post(
 app.post("/findDialogById", dialogController.findDialogById);
 app.post("/send_message", dialogController.saveMessage);
 app.post("/send_new", dialogController.setNew);
-app.post("/test", postController.test);
+app.get("/test", postController.test);
 io.on("connection", (socket) => {
   console.log("New client connected");
   socket.on("join", (userId) => {
