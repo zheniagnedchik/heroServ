@@ -101,7 +101,16 @@ async function findUserByEmail(email) {
 exports.uploudFileToPost = async (req, res) => {
   console.log(req);
   try {
-    const { email, folder, type, userId, contentType, userName } = req.body; // Email пользователя
+    const {
+      email,
+      folder,
+      type,
+      userId,
+      contentType,
+      userName,
+      desc,
+      namePost,
+    } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
     const session = store.openSession();
     const name = req.file.originalname;
@@ -133,7 +142,8 @@ exports.uploudFileToPost = async (req, res) => {
           );
           const uri = data.result.playback.hls;
           const prev = data.result.thumbnail;
-          const description = "";
+          const description = desc;
+          const postName = namePost;
 
           const newPost = new Post(
             userId,
@@ -143,7 +153,8 @@ exports.uploudFileToPost = async (req, res) => {
             contentType,
             type,
             userName,
-            altUri
+            altUri,
+            postName
           );
 
           await session.store(newPost);
@@ -167,7 +178,8 @@ exports.uploudFileToPost = async (req, res) => {
         const uri = dataImg.result.variants[0];
         const altURI = `${URI}/${path.join(folder, testName[1])}`;
         const type = "photo";
-        const description = "";
+        const description = desc;
+        const postName = namePost;
         const newPost = new Post(
           userId,
           prev,
@@ -176,7 +188,8 @@ exports.uploudFileToPost = async (req, res) => {
           contentType,
           type,
           userName,
-          altURI
+          altURI,
+          postName
         );
         await session.store(newPost);
         await session.saveChanges();
