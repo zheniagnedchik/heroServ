@@ -564,7 +564,7 @@ exports.addEvents = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
-    user.events.push(eventDescription);
+    user.events = [...user.events, ...eventDescription];
     await session.saveChanges();
     return res.json({ message: "Объект добавлен в поле events пользователя." });
   } catch (error) {
