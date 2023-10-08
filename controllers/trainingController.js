@@ -18,9 +18,15 @@ const Trainings = require("../models/training");
 
 exports.createTraining = async (req, res) => {
   try {
-    const { creator, exercise, days, nameTraining } = req.body;
+    const { creator, exercise, days, nameTraining, type } = req.body;
     const session = store.openSession();
-    const newTraining = new Trainings(creator, exercise, days, nameTraining);
+    const newTraining = new Trainings(
+      creator,
+      exercise,
+      days,
+      nameTraining,
+      type
+    );
     await session.store(newTraining);
     await session.saveChanges();
     res.status(201).json(newTraining);
@@ -39,6 +45,25 @@ exports.getTrainingsFromUserId = async (req, res) => {
     const trainings = await session
       .query({ collection: "Trainings" })
       .whereEquals("creator", creator)
+      .whereEquals("type", "train")
+      .all();
+
+    res.status(200).json(trainings);
+  } catch (err) {
+    console.error("Ошибка при получении тренировок:", err);
+    res.status(500).send("Ошибка на сервере.");
+  }
+};
+exports.getFoodFromUserId = async (req, res) => {
+  const session = store.openSession();
+
+  try {
+    const { creator } = req.body;
+
+    const trainings = await session
+      .query({ collection: "Trainings" })
+      .whereEquals("creator", creator)
+      .whereEquals("type", "food")
       .all();
 
     res.status(200).json(trainings);

@@ -79,6 +79,7 @@ app.post(
   "/get_training_from_user_id",
   trainingController.getTrainingsFromUserId
 );
+app.post("/get_food_from_user_id", trainingController.getFoodFromUserId);
 app.get("/test", postController.test);
 io.on("connection", (socket) => {
   console.log("New client connected");
