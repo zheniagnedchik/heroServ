@@ -52,7 +52,7 @@ app.post("/api/subscriptions", userController.subscriptions);
 app.post("/api/users/batch", userController.butch);
 app.post("/api/users/batch_events", userController.butchEvents);
 app.post("/add_event", userController.addEvents);
-app.post("/add_event", userController.addEat);
+app.post("/add_eat", userController.addEat);
 app.post(
   "/upload_to_post",
   upload.single("file"),
