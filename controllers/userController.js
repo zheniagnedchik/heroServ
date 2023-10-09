@@ -580,7 +580,7 @@ exports.addEat = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
-    user.eat = [...userId.eat, ...eat];
+    user.eat = [...user.eat, ...eat];
     await session.saveChanges();
     return res.json({ message: "Объект добавлен в поле events пользователя." });
   } catch (error) {
