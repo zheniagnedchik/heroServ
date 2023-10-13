@@ -57,6 +57,22 @@ exports.editTrainings = async (req, res) => {
     console.log(err);
   }
 };
+exports.trainingsDel = async (req, res) => {
+  const session = store.openSession();
+  try {
+    const { id } = req.body;
+    const training = await session.load(id);
+    if (training) {
+      session.delete(training);
+      await session.saveChanges();
+      res.status(200).json(training);
+    } else {
+      console.log("Объект не найден");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 exports.getTrainingsFromUserId = async (req, res) => {
   const session = store.openSession();
 
