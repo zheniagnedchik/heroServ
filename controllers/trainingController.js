@@ -36,6 +36,27 @@ exports.createTraining = async (req, res) => {
       .json({ error: "Произошла ошибка при добавлении тренировки" });
   }
 };
+
+exports.editTrainings = async (req, res) => {
+  const session = store.openSession();
+  try {
+    const { creator, exercise, days, nameTraining, type, id } = req.body;
+    const training = await session.load(id);
+    if (training) {
+      training.creator = creator;
+      training.exercise = exercise;
+      training.days = days;
+      training.nameTraining = nameTraining;
+      training.type = type;
+      await session.saveChanges();
+      res.status(200).json(training);
+    } else {
+      console.log("Объект не найден");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 exports.getTrainingsFromUserId = async (req, res) => {
   const session = store.openSession();
 
