@@ -352,15 +352,28 @@ exports.getTraining = async (req, res) => {
     }
     const session = store.openSession();
     // Получение постов от подписчиков
-    const feedItems = await session
-      .query({ collection: "Posts" })
-      .whereIn("userId", followingUserIds)
-      .whereEquals("contentType", "training")
-      .whereEquals("typeTraining", typeTraining)
-      .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
-      .skip(offset)
-      .take(limit)
-      .all();
+    let feedItems;
+    if (typeTraining) {
+      feedItems = await session
+        .query({ collection: "Posts" })
+        .whereIn("userId", followingUserIds)
+        .whereEquals("contentType", "training")
+        .whereEquals("typeTraining", typeTraining)
+        .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
+        .skip(offset)
+        .take(limit)
+        .all();
+    } else {
+      feedItems = await session
+        .query({ collection: "Posts" })
+        .whereIn("userId", followingUserIds)
+        .whereEquals("contentType", "training")
+        .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
+        .skip(offset)
+        .take(limit)
+        .all();
+    }
+
     // Получение информации о пользователях, которые создали посты
     res.send(feedItems);
   } catch (error) {
