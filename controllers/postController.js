@@ -110,6 +110,7 @@ exports.uploudFileToPost = async (req, res) => {
       userName,
       desc,
       namePost,
+      typeTraining,
     } = req.body; // Email пользователя
     const user = await findUserByEmail(email);
     const session = store.openSession();
@@ -154,7 +155,8 @@ exports.uploudFileToPost = async (req, res) => {
             type,
             userName,
             altUri,
-            postName
+            postName,
+            typeTraining
           );
 
           await session.store(newPost);

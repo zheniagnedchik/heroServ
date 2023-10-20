@@ -8,7 +8,8 @@ class Post {
     type,
     userName,
     altUri,
-    postName
+    postName,
+    typeTraining
   ) {
     this.userId = userId;
     this.prev = prev;
@@ -22,6 +23,7 @@ class Post {
     this.userName = userName;
     this.altUri = altUri;
     this.postName = postName;
+    this.typeTraining = typeTraining;
   }
 }
 module.exports = Post;
