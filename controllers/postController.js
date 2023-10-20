@@ -346,7 +346,7 @@ exports.getTraining = async (req, res) => {
     const offset = parseInt(req.body.offset) || 0;
     const limit = parseInt(req.body.limit) || 10;
     const followingUserIds = req.body.followingUserIds; // Список ID пользователей, на которых подписан клиент
-
+    const typeTraining = req.body.typeTraining;
     if (!followingUserIds || !followingUserIds.length) {
       return res.status(400).send("followingUserIds are required");
     }
@@ -356,6 +356,7 @@ exports.getTraining = async (req, res) => {
       .query({ collection: "Posts" })
       .whereIn("userId", followingUserIds)
       .whereEquals("contentType", "training")
+      .whereEquals("typeTraining", typeTraining)
       .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
       .skip(offset)
       .take(limit)
