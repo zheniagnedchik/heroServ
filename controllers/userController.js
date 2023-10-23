@@ -619,7 +619,9 @@ exports.removeActiveEvent = async (req, res) => {
 
     if (index !== -1) {
       // Если объект с таким ID найден, удаляем его
-      user.activeEvents.splice(index, 1);
+      user.activeEvents = user.activeEvents.filter(
+        (event) => event.id !== eventId
+      );
     } else {
       // Если объект с таким ID не найден, отправляем соответствующий ответ
       return res.status(404).json({ message: "Событие не найдено" });
