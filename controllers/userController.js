@@ -580,14 +580,30 @@ exports.addActiveEvents = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
-    user.activeEvents = [...user.activeEvents, eventDescription];
+
+    // Находим индекс объекта с таким же ID, если он есть
+    const index = user.activeEvents.findIndex(
+      (event) => event.id === eventDescription.id
+    );
+
+    if (index !== -1) {
+      // Если объект с таким ID уже существует, то заменяем его
+      user.activeEvents[index] = eventDescription;
+    } else {
+      // В противном случае добавляем новый объект
+      user.activeEvents.push(eventDescription);
+    }
+
     await session.saveChanges();
-    return res.json({ message: "Объект добавлен в поле events пользователя." });
+    return res.json({
+      message: "Объект добавлен или обновлен в поле events пользователя.",
+    });
   } catch (error) {
     console.error("Произошла ошибка:", error);
     return res.status(500).json({ message: "Произошла ошибка на сервере" });
   }
 };
+
 exports.addEat = async (req, res) => {
   const { userId, eat } = req.body;
   try {
