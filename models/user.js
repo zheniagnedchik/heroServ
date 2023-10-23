@@ -43,6 +43,7 @@ class User {
     this.clients = clients;
     this.treners = treners;
     this.nikName = nikName;
+    this.activeEvents = [];
   }
 }
 
