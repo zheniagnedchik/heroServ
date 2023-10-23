@@ -605,6 +605,10 @@ exports.addActiveEvents = async (req, res) => {
 };
 exports.removeActiveEvent = async (req, res) => {
   const { userId, eventId } = req.body;
+  console.log(
+    "🚀 ~ file: userController.js:608 ~ exports.removeActiveEvent= ~ eventId:",
+    eventId
+  );
 
   try {
     const session = store.openSession();
