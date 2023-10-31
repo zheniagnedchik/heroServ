@@ -5,6 +5,8 @@ const userController = require("./controllers/userController");
 const postController = require("./controllers/postController");
 const dialogController = require("./controllers/dialogController");
 const trainingController = require("./controllers/trainingController");
+const shopController = require("./controllers/shopController");
+const cors = require("cors");
 const multer = require("multer");
 const http = require("http");
 const socketIo = require("socket.io");
@@ -26,6 +28,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+app.use(cors());
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 app.use("/avatar", express.static(path.join(__dirname, "avatar")));
 app.use("/photo", express.static(path.join(__dirname, "photo")));
@@ -85,6 +88,8 @@ app.post("/edit_trainings", trainingController.editTrainings);
 app.post("/del_trainings", trainingController.trainingsDel);
 app.post("/add_active_events", userController.addActiveEvents);
 app.post("/del_active_events", userController.removeActiveEvent);
+app.post("/add_items_to_shop", shopController.addItemToShop);
+app.post("/getItemsFromShop", shopController.getAllItemsFromShop);
 console.log("ok");
 app.get("/test", postController.test);
 io.on("connection", (socket) => {
