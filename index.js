@@ -29,6 +29,7 @@ const upload = multer({ storage: storage });
 app.use("/thumbnails", express.static(path.join(__dirname, "thumbnails")));
 app.use("/avatar", express.static(path.join(__dirname, "avatar")));
 app.use("/photo", express.static(path.join(__dirname, "photo")));
+app.use("/shopImg", express.static(path.join(__dirname, "shopImg")));
 const port = 3000;
 app.use(express.json());
 
