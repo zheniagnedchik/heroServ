@@ -654,3 +654,22 @@ exports.addEat = async (req, res) => {
     return res.status(500).json({ message: "Произошла ошибка на сервере" });
   }
 };
+exports.getUserFromPlace = async (req, res) => {
+  const { placeId } = req.body;
+
+  if (isNaN(placeId)) {
+    return res.status(400).send("Invalid place ID");
+  }
+  let session = store.openSession();
+  try {
+    const users = await session
+      .query({ collection: "Users" })
+      .whereEquals("place.id", placeId)
+      .all();
+
+    res.json(users);
+  } catch (error) {
+    console.error("Ошибка при запросе:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};

@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+const ffmpeg = require("fluent-ffmpeg");
 const userController = require("./controllers/userController");
 const postController = require("./controllers/postController");
 const dialogController = require("./controllers/dialogController");
@@ -90,7 +91,25 @@ app.post("/add_active_events", userController.addActiveEvents);
 app.post("/del_active_events", userController.removeActiveEvent);
 app.post("/add_items_to_shop", shopController.addItemToShop);
 app.post("/getItemsFromShop", shopController.getAllItemsFromShop);
-console.log("ok");
+app.post("/get_users_from_place", userController.getUserFromPlace);
+app.get("/convert", (req, res) => {
+  const inputPath = path.join(__dirname, "1698739988758.mp4"); // Название входного файла
+  const outputPath = path.join(__dirname, "output_video.mp4"); // Название выходного файла
+
+  ffmpeg(inputPath)
+    .videoCodec("libx265") // используем кодек x264 для сжатия видео
+    .addOption("-preset", "superfast") // быстрый пресет
+    .addOption("-crf", "23") // CRF: значение 23 обычно считается хорошим балансом между качеством и размером файла
+    .audioBitrate("128k") // устанавливаем битрейт аудио
+    .on("end", () => {
+      res.send("ok");
+      console.log("Все ок! Сжатие завершено.");
+    })
+    .on("error", (err) => {
+      console.error("Error:", err);
+    })
+    .save(outputPath);
+});
 app.get("/test", postController.test);
 io.on("connection", (socket) => {
   console.log("New client connected");
