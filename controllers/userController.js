@@ -383,11 +383,36 @@ exports.changeNikName = async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 };
+// exports.users = async (req, res) => {
+//   console.log("users");
+//   const session = store.openSession();
+//   try {
+//     const users = await session.query({ collection: "Users" }).all();
+//     res.json(users);
+//   } catch (err) {
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// };
 exports.users = async (req, res) => {
   console.log("users");
   const session = store.openSession();
+
+  // Получаем параметры фильтра из запроса
+  const typeGymFilter = req.query.typeGym; // может быть 'онлайн' или 'офлайн'
+  const genderFilter = req.query.gender; // может быть 'W' или 'M'
+
   try {
-    const users = await session.query({ collection: "Users" }).all();
+    let query = session.query({ collection: "Users" });
+
+    // Добавляем фильтрацию, если параметры предоставлены
+    if (typeGymFilter) {
+      query = query.whereEquals("typeGym", typeGymFilter);
+    }
+    if (genderFilter) {
+      query = query.whereEquals("gender", genderFilter);
+    }
+
+    const users = await query.all();
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: "An error occurred" });
