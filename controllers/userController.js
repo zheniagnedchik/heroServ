@@ -383,16 +383,6 @@ exports.changeNikName = async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 };
-// exports.users = async (req, res) => {
-//   console.log("users");
-//   const session = store.openSession();
-//   try {
-//     const users = await session.query({ collection: "Users" }).all();
-//     res.json(users);
-//   } catch (err) {
-//     res.status(500).json({ error: "An error occurred" });
-//   }
-// };
 exports.users = async (req, res) => {
   console.log("users");
   const session = store.openSession();
