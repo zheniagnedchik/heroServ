@@ -397,19 +397,15 @@ exports.users = async (req, res) => {
   console.log("users");
   const session = store.openSession();
 
-  // Получаем параметры фильтра из запроса
-  const typeGymFilter = req.query.typeGym; // может быть 'онлайн' или 'офлайн'
-  const genderFilter = req.query.gender; // может быть 'W' или 'M'
-
   try {
     let query = session.query({ collection: "Users" });
 
-    // Добавляем фильтрацию, если параметры предоставлены
-    if (typeGymFilter) {
-      query = query.whereEquals("typeGym", typeGymFilter);
+    // Проверяем, определены ли параметры фильтрации, и добавляем их в запрос
+    if (typeof req.query.typeGym !== "undefined") {
+      query = query.whereEquals("typeGym", req.query.typeGym);
     }
-    if (genderFilter) {
-      query = query.whereEquals("gender", genderFilter);
+    if (typeof req.query.gender !== "undefined") {
+      query = query.whereEquals("gender", req.query.gender);
     }
 
     const users = await query.all();
@@ -418,6 +414,7 @@ exports.users = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+
 exports.searchUsers = async (req, res) => {
   const queryTerm = req.query.userName;
 
