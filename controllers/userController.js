@@ -391,10 +391,14 @@ exports.users = async (req, res) => {
     let query = session.query({ collection: "Users" });
 
     // Проверяем, определены ли параметры фильтрации, и добавляем их в запрос
-    if (typeof req.query.typeGym !== "undefined") {
+    if (req.query.typeGym !== "undefined") {
+      console.log(
+        "🚀 ~ file: userController.js:395 ~ exports.users= ~ req.query.typeGym:",
+        req.query.typeGym
+      );
       query = query.whereEquals("typeGym", req.query.typeGym);
     }
-    if (typeof req.query.gender !== "undefined") {
+    if (req.query.gender !== "undefined") {
       query = query.whereEquals("gender", req.query.gender);
     }
 
