@@ -37,3 +37,20 @@ exports.getAllItemsFromShop = async (req, res) => {
     res.send({ success: false, message: error.message });
   }
 };
+exports.searchShop = async (req, res) => {
+  const searchTerm = req.body.searchTerm;
+  const session = store.openSession();
+
+  try {
+    // Поиск без использования индекса
+    const results = await session
+      .query({ collection: "Shops" })
+      .whereEquals("Name", searchTerm)
+      .orElse()
+      .whereEquals("Category", searchTerm)
+      .all();
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

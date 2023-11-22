@@ -93,6 +93,7 @@ app.post("/add_items_to_shop", shopController.addItemToShop);
 app.post("/getItemsFromShop", shopController.getAllItemsFromShop);
 app.post("/find_nearest", userController.findNearest);
 app.post("/get_users_from_place", userController.getUserFromPlace);
+app.post("/search_shop", shopController.searchShop);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4"); // Название входного файла
   const outputPath = path.join(__dirname, "output_video.mp4"); // Название выходного файла
