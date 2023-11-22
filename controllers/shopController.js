@@ -39,24 +39,18 @@ exports.getAllItemsFromShop = async (req, res) => {
 };
 exports.searchShop = async (req, res) => {
   const searchTerm = req.body.searchTerm;
-  console.log(
-    "🚀 ~ file: shopController.js:42 ~ exports.searchShop= ~ searchTerm:",
-    searchTerm
-  );
+  console.log("🚀 ~ file: shopController.js ~ searchTerm:", searchTerm);
+
   const session = store.openSession();
 
   try {
-    // Поиск без использования индекса
+    // Полнотекстовый поиск без использования индекса
     const results = await session
       .query({ collection: "Shops" })
-      .whereContains("name", searchTerm)
+      .search("name", searchTerm)
       .orElse()
-      .whereContains("category", searchTerm)
+      .search("category", searchTerm)
       .all();
-    console.log(
-      "🚀 ~ file: shopController.js:57 ~ exports.searchShop= ~ results:",
-      results
-    );
     res.json(results);
   } catch (error) {
     res.status(500).json({ error: error.message });
