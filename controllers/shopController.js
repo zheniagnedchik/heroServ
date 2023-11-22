@@ -39,6 +39,10 @@ exports.getAllItemsFromShop = async (req, res) => {
 };
 exports.searchShop = async (req, res) => {
   const searchTerm = req.body.searchTerm;
+  console.log(
+    "🚀 ~ file: shopController.js:42 ~ exports.searchShop= ~ searchTerm:",
+    searchTerm
+  );
   const session = store.openSession();
 
   try {
