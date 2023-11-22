@@ -53,6 +53,10 @@ exports.searchShop = async (req, res) => {
       .orElse()
       .whereContains("category", searchTerm)
       .all();
+    console.log(
+      "🚀 ~ file: shopController.js:57 ~ exports.searchShop= ~ results:",
+      results
+    );
     res.json(results);
   } catch (error) {
     res.status(500).json({ error: error.message });
