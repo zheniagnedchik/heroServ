@@ -32,6 +32,8 @@ exports.register = async (req, res) => {
       clients,
       treners,
       nikName,
+      place,
+      typeGym,
     } = req.body;
     const session = store.openSession();
     const existingUser = await session
@@ -68,7 +70,9 @@ exports.register = async (req, res) => {
       eat,
       clients,
       treners,
-      nikName
+      nikName,
+      place,
+      typeGym
     );
 
     await session.store(newUser);
@@ -102,6 +106,8 @@ exports.register = async (req, res) => {
         treners,
         id: newUser.id,
         nikName,
+        place,
+        typeGym,
       },
     });
   } catch (error) {

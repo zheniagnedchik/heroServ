@@ -21,7 +21,9 @@ class User {
     eat,
     clients,
     treners,
-    nikName
+    nikName,
+    place,
+    typeGym
   ) {
     this.email = email;
     this.passwordHash = passwordHash;
@@ -44,6 +46,8 @@ class User {
     this.treners = treners;
     this.nikName = nikName;
     this.activeEvents = [];
+    this.place = place;
+    this.typeGym = typeGym;
   }
 }
 
