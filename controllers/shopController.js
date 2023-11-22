@@ -49,9 +49,9 @@ exports.searchShop = async (req, res) => {
     // Поиск без использования индекса
     const results = await session
       .query({ collection: "Shops" })
-      .whereEquals("name", searchTerm)
+      .whereContains("name", searchTerm)
       .orElse()
-      .whereEquals("category", searchTerm)
+      .whereContains("category", searchTerm)
       .all();
     res.json(results);
   } catch (error) {
