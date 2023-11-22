@@ -408,7 +408,31 @@ exports.users = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+exports.findNearest = async (req, res) => {
+  const { latitude, longitude } = req.body;
 
+  if (!latitude || !longitude) {
+    return res.status(400).send("Latitude and longitude are required.");
+  }
+
+  let session = store.openSession();
+  try {
+    let users = await session
+      .query({ collection: "Users" })
+      .spatial("place", (factory) =>
+        factory.withinRadius(10, latitude, longitude)
+      )
+      .orderByDistance("place", latitude, longitude)
+      .all();
+
+    res.json(users);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Internal Server Error");
+  } finally {
+    session.dispose();
+  }
+};
 exports.searchUsers = async (req, res) => {
   const queryTerm = req.query.userName;
 
