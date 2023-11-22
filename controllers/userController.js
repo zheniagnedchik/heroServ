@@ -401,6 +401,9 @@ exports.users = async (req, res) => {
     if (req.query.gender !== "undefined") {
       query = query.whereEquals("gender", req.query.gender);
     }
+    if (req.query.placeId !== "undefined") {
+      query = query.whereEquals("place.id", req.query.placeId);
+    }
 
     const users = await query.all();
     res.json(users);
