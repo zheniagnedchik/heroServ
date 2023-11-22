@@ -410,29 +410,83 @@ exports.users = async (req, res) => {
 };
 exports.findNearest = async (req, res) => {
   const { latitude, longitude } = req.body;
-
   if (!latitude || !longitude) {
     return res.status(400).send("Latitude and longitude are required.");
   }
+
+  const myLatitude = parseFloat(latitude);
+  const myLongitude = parseFloat(longitude);
 
   let session = store.openSession();
   try {
     let users = await session
       .query({ collection: "Users" })
-      .spatial("place", (factory) =>
-        factory.withinRadius(10, latitude, longitude)
-      )
-      .orderByDistance("place", latitude, longitude)
+      .whereExists("place")
       .all();
 
-    res.json(users);
+    let nearestUserData = null;
+    let shortestDistance = Infinity;
+
+    users.forEach((user) => {
+      if (user.place && user.place.latitude && user.place.longitude) {
+        let distance = calculateDistance(
+          myLatitude,
+          myLongitude,
+          parseFloat(user.place.latitude),
+          parseFloat(user.place.longitude)
+        );
+        if (distance < shortestDistance) {
+          shortestDistance = distance;
+          nearestUserData = { user, distance };
+        }
+      }
+    });
+
+    res.json(nearestUserData);
   } catch (e) {
     console.error(e);
     res.status(500).send("Internal Server Error");
-  } finally {
-    session.dispose();
   }
 };
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  // Функция для вычисления расстояния между двумя точками
+  const R = 6371; // радиус Земли в километрах
+  const dLat = degreesToRadians(lat2 - lat1);
+  const dLon = degreesToRadians(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(degreesToRadians(lat1)) *
+      Math.cos(degreesToRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function degreesToRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  // Функция для вычисления расстояния между двумя точками
+  // Используем формулу гаверсинуса
+  const R = 6371; // радиус Земли в километрах
+  const dLat = degreesToRadians(lat2 - lat1);
+  const dLon = degreesToRadians(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(degreesToRadians(lat1)) *
+      Math.cos(degreesToRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function degreesToRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
 exports.searchUsers = async (req, res) => {
   const queryTerm = req.query.userName;
 
