@@ -44,9 +44,9 @@ exports.searchShop = async (req, res) => {
     // Полнотекстовый поиск без использования индекса
     const results = await session
       .query({ indexName: "Shops_ByNameAndCategory" })
-      .search("Name", searchTerm)
+      .search("Name", `*${searchTerm}*`)
       .orElse()
-      .search("Category", searchTerm)
+      .search("Category", `*${searchTerm}*`)
       .all();
     res.json(results);
   } catch (error) {
