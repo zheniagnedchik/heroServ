@@ -39,10 +39,7 @@ exports.getAllItemsFromShop = async (req, res) => {
 };
 exports.searchShop = async (req, res) => {
   const searchTerm = req.body.searchTerm;
-  console.log("🚀 ~ file: shopController.js ~ searchTerm:", searchTerm);
-
   const session = store.openSession();
-
   try {
     // Полнотекстовый поиск без использования индекса
     const results = await session
