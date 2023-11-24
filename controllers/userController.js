@@ -803,7 +803,7 @@ exports.generatePost = async (req, res) => {
       data,
       { headers }
     );
-
+    console.log(response.data);
     res.json(response.data);
   } catch (error) {
     console.error(error);
