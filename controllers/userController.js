@@ -789,7 +789,7 @@ exports.generatePost = async (req, res) => {
     };
 
     const data = {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4-1106-preview",
       messages: [
         {
           role: "user",
