@@ -790,7 +790,7 @@ exports.generatePost = async (req, res) => {
     };
 
     const data = {
-      model: "gpt-3.5-turbo-instruct-0914",
+      model: "ada",
       messages: [
         {
           role: "user",
