@@ -810,3 +810,34 @@ exports.generatePost = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.genImage = async (req, res) => {
+  try {
+    const { model, prompt, n, size, key } = req.body;
+
+    const OPENAI_API_KEY = key;
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
+    };
+
+    const data = {
+      model,
+      prompt,
+      n,
+      size,
+    };
+
+    const response = await axios.post(
+      "https://api.openai.com/v1/images/generations",
+      data,
+      { headers }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
