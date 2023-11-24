@@ -780,6 +780,7 @@ exports.getUserFromPlace = async (req, res) => {
 
 exports.generatePost = async (req, res) => {
   const { mess, key } = req.body;
+  console.log("старт ген");
   try {
     const apiKey = key;
 
