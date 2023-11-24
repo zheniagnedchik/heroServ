@@ -789,7 +789,7 @@ exports.generatePost = async (req, res) => {
     };
 
     const data = {
-      model: "gpt-4-1106-preview",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "user",
@@ -801,7 +801,7 @@ exports.generatePost = async (req, res) => {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       data,
-      { headers }
+      { headers, timeout: 600000 }
     );
     console.log(response.data);
     res.json(response.data);
