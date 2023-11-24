@@ -797,6 +797,7 @@ exports.generatePost = async (req, res) => {
           content: mess,
         },
       ],
+      max_tokens: 200,
     };
 
     const response = await axios.post(
