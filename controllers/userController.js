@@ -7,6 +7,7 @@ const multer = require("multer");
 const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
 const path = require("path");
+const axios = require("axios");
 
 exports.register = async (req, res) => {
   try {
@@ -774,5 +775,38 @@ exports.getUserFromPlace = async (req, res) => {
   } catch (error) {
     console.error("Ошибка при запросе:", error);
     res.status(500).send("Internal Server Error");
+  }
+};
+
+exports.generatePost = async (req, res) => {
+  const { mess } = req.body;
+  try {
+    const apiKey = "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";
+
+    const headers = {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    };
+
+    const data = {
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: mess,
+        },
+      ],
+    };
+
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      data,
+      { headers }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
