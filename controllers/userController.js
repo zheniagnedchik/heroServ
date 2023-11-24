@@ -779,9 +779,9 @@ exports.getUserFromPlace = async (req, res) => {
 };
 
 exports.generatePost = async (req, res) => {
-  const { mess } = req.body;
+  const { mess, key } = req.body;
   try {
-    const apiKey = "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";
+    const apiKey = key;
 
     const headers = {
       Authorization: `Bearer ${apiKey}`,
