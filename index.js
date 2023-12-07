@@ -90,6 +90,7 @@ app.post("/del_trainings", trainingController.trainingsDel);
 app.post("/add_active_events", userController.addActiveEvents);
 app.post("/del_active_events", userController.removeActiveEvent);
 app.post("/add_items_to_shop", shopController.addItemToShop);
+app.get("/get_shop_categories", shopController.getCategories);
 app.post("/getItemsFromShop", shopController.getAllItemsFromShop);
 app.post("/find_nearest", userController.findNearest);
 app.post("/get_users_from_place", userController.getUserFromPlace);

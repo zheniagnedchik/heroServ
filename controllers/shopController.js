@@ -25,16 +25,29 @@ exports.addItemToShop = async (req, res) => {
 };
 exports.getAllItemsFromShop = async (req, res) => {
   try {
+    const limit = parseInt(req.body.limit) || 10; // Установка значения по умолчанию, если лимит не указан
+
     const session = store.openSession();
-
-    // Используйте метод 'query' для получения всех элементов
     const items = await session
-      .query({ collection: "Shops" }) // Убедитесь, что 'Shops' соответствует вашей коллекции
+      .query({ collection: "Shops" })
+      .take(limit)
       .all();
-
     res.send({ success: true, data: items });
   } catch (error) {
     res.send({ success: false, message: error.message });
+  }
+};
+exports.getCategories = async (req, res) => {
+  let session = store.openSession();
+  try {
+    const data = await session.query({ collection: "Shops" }).all();
+    const categories = new Set(
+      data.map((item) => item.category).filter((category) => category != null)
+    );
+    res.json(Array.from(categories));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).send("Error fetching categories");
   }
 };
 exports.searchShop = async (req, res) => {
