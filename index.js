@@ -97,6 +97,7 @@ app.post("/get_users_from_place", userController.getUserFromPlace);
 app.post("/search_shop", shopController.searchShop);
 app.post("/generate_post", userController.generatePost);
 app.post("/generate_image", userController.genImage);
+app.post("/get_callories", userController.getCallories);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4"); // Название входного файла
   const outputPath = path.join(__dirname, "output_video.mp4"); // Название выходного файла

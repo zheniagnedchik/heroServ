@@ -843,3 +843,35 @@ exports.genImage = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getCallories = async (req, res) => {
+  const sessionId = store.openSession();
+  try {
+    const userId = req.body.id;
+    const user = await sessionId.load(`Users/${userId}`);
+    if (user) {
+      res.json(user.calories);
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
+};
+exports.changeCallories = async (req, res) => {
+  const sessionId = store.openSession();
+  try {
+    const userId = req.params.id;
+    const newCalories = req.body;
+    let user = await sessionId.load(`Users/${userId}`);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    user.calories = newCalories;
+    await sessionId.saveChanges();
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
