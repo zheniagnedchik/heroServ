@@ -847,7 +847,7 @@ exports.genImage = async (req, res) => {
 exports.getCallories = async (req, res) => {
   const sessionId = store.openSession();
   try {
-    const userId = req.body.id;
+    const userId = req.body.userId;
     const user = await sessionId.load(`Users/${userId}`);
     if (user) {
       res.json(user.calories);
