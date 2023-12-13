@@ -862,7 +862,7 @@ exports.changeCallories = async (req, res) => {
   const sessionId = store.openSession();
   try {
     const userId = req.body.userId;
-    const newCalories = req.body;
+    const newCalories = req.body.newCalories;
     const user = await sessionId.load(userId);
     if (!user) {
       return res.status(404).send("User not found");
