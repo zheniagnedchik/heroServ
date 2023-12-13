@@ -861,7 +861,7 @@ exports.getCallories = async (req, res) => {
 exports.changeCallories = async (req, res) => {
   const sessionId = store.openSession();
   try {
-    const userId = req.params.id;
+    const userId = req.body.userId;
     const newCalories = req.body;
     const user = await sessionId.load(userId);
     if (!user) {
