@@ -858,16 +858,24 @@ exports.getCallories = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-exports.changeCallories = async (req, res) => {
+exports.changeCalories = async (req, res) => {
   const sessionId = store.openSession();
   try {
     const userId = req.body.userId;
-    const newCalories = req.body;
+    const newCalories = req.body.newCalories; // Убедитесь, что вы получаете newCalories правильно
     const user = await sessionId.load(userId);
+
     if (!user) {
       return res.status(404).send("User not found");
     }
-    user.calories = newCalories;
+
+    if (!Array.isArray(user.calories)) {
+      user.calories = []; // Если user.calories не массив, инициализируем его пустым массивом
+    }
+
+    // Объединяем старый и новый массивы калорий
+    user.calories = user.calories.concat(newCalories); // или используйте spread оператор [...user.calories, ...newCalories]
+
     await sessionId.saveChanges();
     res.json(user);
   } catch (error) {
