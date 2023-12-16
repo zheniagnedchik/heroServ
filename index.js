@@ -99,15 +99,17 @@ app.post("/generate_post", userController.generatePost);
 app.post("/generate_image", userController.genImage);
 app.post("/get_callories", userController.getCallories);
 app.post("/change_callories", userController.changeCallories);
+app.post("/change_diet", userController.changeDiet);
+app.get("/users_upd", userController.userUpd);
 app.get("/convert", (req, res) => {
-  const inputPath = path.join(__dirname, "1698739988758.mp4"); // Название входного файла
-  const outputPath = path.join(__dirname, "output_video.mp4"); // Название выходного файла
+  const inputPath = path.join(__dirname, "1698739988758.mp4");
+  const outputPath = path.join(__dirname, "output_video.mp4");
 
   ffmpeg(inputPath)
-    .videoCodec("libx265") // используем кодек x264 для сжатия видео
-    .addOption("-preset", "superfast") // быстрый пресет
-    .addOption("-crf", "23") // CRF: значение 23 обычно считается хорошим балансом между качеством и размером файла
-    .audioBitrate("128k") // устанавливаем битрейт аудио
+    .videoCodec("libx265")
+    .addOption("-preset", "superfast")
+    .addOption("-crf", "23")
+    .audioBitrate("128k")
     .on("end", () => {
       res.send("ok");
       console.log("Все ок! Сжатие завершено.");
@@ -127,8 +129,6 @@ io.on("connection", (socket) => {
   socket.on("private_message", (message) => {
     console.log(message, "message");
     io.to(message.receiverId).emit("new_private_message", message);
-    // Сохраните ваше сообщение в базе данных здесь
-    // Например: saveMessageToDb(message);
   });
   socket.on("disconnect", () => {
     console.log("Client disconnected");

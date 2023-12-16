@@ -875,3 +875,35 @@ exports.changeCallories = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+exports.changeDiet = async (req, res) => {
+  const sessionId = store.openSession();
+  try {
+    const userId = req.body.userId;
+    const newCalories = req.body.diet;
+    const user = await sessionId.load(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    user.diet = [...user.diet, ...newCalories];
+    await sessionId.saveChanges();
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+exports.userUpd = async (req, res) => {
+  const session = store.openSession();
+
+  try {
+    const users = await session.query({ collection: "Users" }).all();
+    for (const user of users) {
+      user.diet = [];
+      await session.saveChanges();
+    }
+    res.status(200).send("Users updated successfully");
+  } catch (error) {
+    console.error("Error updating users:", error);
+    res.status(500).send("Error updating users");
+  }
+};
