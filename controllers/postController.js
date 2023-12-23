@@ -111,12 +111,18 @@ exports.uploudFileToPost = async (req, res) => {
       desc,
       namePost,
       typeTraining,
+      approaches,
     } = req.body; // Email пользователя
+    console.log(
+      "🚀 ~ file: postController.js:116 ~ exports.uploudFileToPost= ~ approaches:",
+      approaches
+    );
     const user = await findUserByEmail(email);
     const session = store.openSession();
     const name = req.file.originalname;
     const testName = name.split("_");
     const fileUri = path.join(folder, testName[1]);
+    const appr = JSON.parse(approaches);
     if (folder === "photo") {
       if (type === "video") {
         const thumbnailFileName = `${testName[1]}.jpg`;
@@ -125,24 +131,24 @@ exports.uploudFileToPost = async (req, res) => {
         const thumbnailPath = path.join(__dirname, folder); // Папка для сохранения обложки
         const thumbnailFullPath = path.join(thumbnailPath, thumbnailFileName);
         try {
-          // await generateVideoThumbnail(
-          //   videoPath,
-          //   thumbnailPath,
-          //   thumbnailFileName
-          // );
-          // user.photo.push({
-          //   uri: path.join(folder, testName[1]),
-          //   type: "video",
-          //   thumbnail: thumbnailUri,
-          // });
-          // const prev = `${URI}/${thumbnailUri}`;
-          const altUri = `${URI}/${path.join(folder, testName[1])}`;
-          const data = await uploadVideo(
-            `${URI}/${path.join(folder, testName[1])}`,
-            name
+          await generateVideoThumbnail(
+            videoPath,
+            thumbnailPath,
+            thumbnailFileName
           );
-          const uri = data.result.playback.hls;
-          const prev = data.result.thumbnail;
+          user.photo.push({
+            uri: path.join(folder, testName[1]),
+            type: "video",
+            thumbnail: thumbnailUri,
+          });
+          const prev = `${URI}/${thumbnailUri}`;
+          const altUri = `${URI}/${path.join(folder, testName[1])}`;
+          // const data = await uploadVideo(
+          //   `${URI}/${path.join(folder, testName[1])}`,
+          //   name
+          // );
+          const uri = "";
+          // const prev = data.result.thumbnail;
           const description = desc;
           const postName = namePost;
 
@@ -156,7 +162,8 @@ exports.uploudFileToPost = async (req, res) => {
             userName,
             altUri,
             postName,
-            typeTraining
+            typeTraining,
+            appr
           );
 
           await session.store(newPost);
@@ -165,10 +172,11 @@ exports.uploudFileToPost = async (req, res) => {
           console.log(
             "Файл и обложка успешно загружены и путь сохранен в базе данных."
           );
+
           res.json({
-            uri: data.result.playback.hls,
+            uri: altUri,
             type: "video",
-            thumbnail: data.result.thumbnail,
+            thumbnail: prev,
           });
         } catch (error) {
           console.error(error);
@@ -191,7 +199,8 @@ exports.uploudFileToPost = async (req, res) => {
           type,
           userName,
           altURI,
-          postName
+          postName,
+          appr
         );
         await session.store(newPost);
         await session.saveChanges();
@@ -205,9 +214,9 @@ exports.uploudFileToPost = async (req, res) => {
       user[folder] = dataImg.result.variants[0];
       await saveUser(user);
     }
-    res.json({
-      message: "Изображение успешно загружено и путь сохранен в базе данных.",
-    });
+    // res.json({
+    //   message: "Изображение успешно загружено и путь сохранен в базе данных.",
+    // });
   } catch (error) {
     console.error(error);
     res
@@ -373,6 +382,14 @@ exports.getTraining = async (req, res) => {
         .take(limit)
         .all();
     }
+    // feedItems = await session
+    //   .query({ collection: "Posts" })
+    //   .whereIn("userId", followingUserIds)
+    //   .whereEquals("contentType", "training")
+    //   .orderByDescending("date") // предполагая, что у вас есть поле с датой создания
+    //   .skip(offset)
+    //   .take(limit)
+    //   .all();
 
     // Получение информации о пользователях, которые создали посты
     res.send(feedItems);

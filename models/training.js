@@ -1,10 +1,11 @@
 class Trainings {
-  constructor(creator, exercise, days, nameTraining, type) {
+  constructor(creator, title, description, days, daysList) {
     this.creator = creator;
-    this.exercise = exercise;
+    this.title = title;
+    this.description = description;
     this.days = days;
-    this.nameTraining = nameTraining;
-    this.type = type;
+    this.active = false;
+    this.daysList = daysList;
   }
 }
 module.exports = Trainings;

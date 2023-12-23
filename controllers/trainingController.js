@@ -18,14 +18,14 @@ const Trainings = require("../models/training");
 
 exports.createTraining = async (req, res) => {
   try {
-    const { creator, exercise, days, nameTraining, type } = req.body;
+    const { creator, title, description, days, daysList } = req.body;
     const session = store.openSession();
     const newTraining = new Trainings(
       creator,
-      exercise,
+      title,
+      description,
       days,
-      nameTraining,
-      type
+      daysList
     );
     await session.store(newTraining);
     await session.saveChanges();
@@ -40,14 +40,16 @@ exports.createTraining = async (req, res) => {
 exports.editTrainings = async (req, res) => {
   const session = store.openSession();
   try {
-    const { creator, exercise, days, nameTraining, type, id } = req.body;
+    const { creator, title, description, days, daysList, id, active } =
+      req.body;
     const training = await session.load(id);
     if (training) {
       training.creator = creator;
-      training.exercise = exercise;
+      training.description = description;
       training.days = days;
-      training.nameTraining = nameTraining;
-      training.type = type;
+      training.title = title;
+      training.daysList = daysList;
+      training.active = active;
       await session.saveChanges();
       res.status(200).json(training);
     } else {
@@ -82,7 +84,6 @@ exports.getTrainingsFromUserId = async (req, res) => {
     const trainings = await session
       .query({ collection: "Trainings" })
       .whereEquals("creator", creator)
-      .whereEquals("type", "train")
       .all();
 
     res.status(200).json(trainings);
