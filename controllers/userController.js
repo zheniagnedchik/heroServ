@@ -907,3 +907,32 @@ exports.userUpd = async (req, res) => {
     res.status(500).send("Error updating users");
   }
 };
+exports.delCalories =  async (req, res) => {
+  const userId = req.body.userId;
+
+  if (!userId) {
+      return res.status(400).send('User ID is required');
+  }
+
+  try {
+      let session = store.openSession();
+      let user = await session.load(userId);
+
+      if (user && user.calories) {
+          // Find the latest time value
+          let latestTime = Math.max(...user.calories.map(c => c.time));
+
+          // Remove items with the latest time value
+          user.calories = user.calories.filter(c => c.time !== latestTime);
+
+          // Save the updated document
+          await session.saveChanges();
+          res.status(200).send('Calories data updated for user ' + userId);
+      } else {
+          res.status(404).send('User not found');
+      }
+  } catch (err) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+  }
+}
