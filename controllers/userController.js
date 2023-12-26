@@ -849,7 +849,23 @@ exports.getCallories = async (req, res) => {
   try {
     const userId = req.body.userId;
     const user = await sessionId.load(userId);
-    if (user) {
+
+    if (user && user.calories && user.calories.length > 0) {
+      // Find the latest time value
+      const latestTime = Math.max(...user.calories.map(c => c.time));
+
+      // Convert the latest time and current time to Date objects
+      const latestDate = new Date(latestTime);
+      const currentDate = new Date();
+
+      // Check if the latest time is from the previous day
+      if (latestDate.getDate() < currentDate.getDate() ||
+          latestDate.getMonth() < currentDate.getMonth() ||
+          latestDate.getFullYear() < currentDate.getFullYear()) {
+        // Clear the calories array
+        user.calories = [];
+      }
+
       res.json(user.calories);
     } else {
       res.status(404).send("User not found");
@@ -858,6 +874,7 @@ exports.getCallories = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 exports.changeCallories = async (req, res) => {
   const sessionId = store.openSession();
   try {
