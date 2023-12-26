@@ -927,7 +927,12 @@ exports.delCalories =  async (req, res) => {
 
           // Save the updated document
           await session.saveChanges();
-          res.status(200).send('Calories data updated for user ' + userId);
+
+          // Return the updated calories
+          res.status(200).json({
+              message: 'Calories data updated for user ' + userId,
+              updatedCalories: user.calories
+          });
       } else {
           res.status(404).send('User not found');
       }
