@@ -101,7 +101,7 @@ app.post("/get_callories", userController.getCallories);
 app.post("/change_callories", userController.changeCallories);
 app.post("/change_diet", userController.changeDiet);
 app.get("/users_upd", userController.userUpd);
-app.get("/del_calories", userController.delCalories);
+app.post("/del_calories", userController.delCalories);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4");
   const outputPath = path.join(__dirname, "output_video.mp4");
