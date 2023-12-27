@@ -865,7 +865,7 @@ exports.getCallories = async (req, res) => {
         // Clear the calories array
         user.calories = [];
       }
-
+      await sessionId.saveChanges();
       res.json(user.calories);
     } else {
       res.status(404).send("User not found");
