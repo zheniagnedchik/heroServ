@@ -110,3 +110,16 @@ exports.getFoodFromUserId = async (req, res) => {
     res.status(500).send("Ошибка на сервере.");
   }
 };
+
+exports.getTrainingsForomFolder = async (req,res)=>{
+  try{
+    const {ids} = req.body
+    const session = store.openSession();
+    const trainings = await session.load(ids);
+    const  documentsArray = Object.values(trainings);
+  res.status(200).json(documentsArray);
+  }catch(err){
+    console.log(err)
+    res.status(500).send("Ошибка на сервере.");
+  }
+}

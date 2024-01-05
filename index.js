@@ -11,6 +11,7 @@ const cors = require("cors");
 const multer = require("multer");
 const http = require("http");
 const socketIo = require("socket.io");
+const foldersController = require("./controllers/foldersController");
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -102,6 +103,10 @@ app.post("/change_callories", userController.changeCallories);
 app.post("/change_diet", userController.changeDiet);
 app.get("/users_upd", userController.userUpd);
 app.post("/del_calories", userController.delCalories);
+app.post("/add_folder", foldersController.addFolder);
+app.post("/get_folders", foldersController.getFolders);
+app.post("/get_trainings_from_folder", trainingController.getTrainingsForomFolder);
+app.post("/change_folder", foldersController.changeFolder);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4");
   const outputPath = path.join(__dirname, "output_video.mp4");
