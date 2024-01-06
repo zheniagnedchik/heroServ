@@ -4,7 +4,8 @@ class Folders {
     this.ids = [];
     this.type = type;
     this.img = img;
-    this.active=false
+    this.active=false;
+    this.createdAt=new Date().getTime()
   }
 }
 module.exports = Folders;
