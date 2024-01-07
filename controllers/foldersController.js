@@ -54,6 +54,19 @@ exports.changeFolder = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+exports.delProgInFolder = async (req, res) => {
+  try {
+    const session = store.openSession();
+    const { folderId, progId } = req.body;
+    const trainings = await session.load(folderId);
+    const index = trainings.ids.findIndex(el=>progId);
+    trainings.ids.splice(index,1)
+    await session.saveChanges();
+    res.send("ok");
+  } catch (err) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+};
 exports.delFolder = async (req, res) => {
   const {id} = req.body
   let session = store.openSession();
