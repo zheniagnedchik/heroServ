@@ -69,10 +69,10 @@ exports.trainingsDel = async (req, res) => {
       await session.saveChanges();
       res.status(200).json(training);
     } else {
-      console.log("Объект не найден");
+   res.send('ok')
     }
   } catch (err) {
-    console.log(err);
+   res.send('err')
   }
 };
 exports.getTrainingsFromUserId = async (req, res) => {
