@@ -54,3 +54,22 @@ exports.changeFolder = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+exports.delFolder = async (req, res) => {
+  const {id} = req.body
+  let session = store.openSession();
+
+  try {
+      // Находим и удаляем документ по ID
+      const document = await session.load(id);
+      if (document) {
+          await session.delete(document);
+          await session.saveChanges();
+          res.status(200).send(`Document with ID ${id} has been deleted.`);
+      } else {
+          res.status(404).send(`Document with ID ${id} not found.`);
+      }
+  } catch (e) {
+      console.error(e);
+      res.status(500).send('Internal Server Error');
+  } 
+}
