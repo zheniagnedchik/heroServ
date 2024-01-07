@@ -59,7 +59,7 @@ exports.delProgInFolder = async (req, res) => {
     const session = store.openSession();
     const { folderId, progId } = req.body;
     const trainings = await session.load(folderId);
-    const index = trainings.ids.findIndex(el=>progId);
+    const index = trainings.ids.findIndex(el=>el===progId);
     trainings.ids.splice(index,1)
     await session.saveChanges();
     res.send("ok");
