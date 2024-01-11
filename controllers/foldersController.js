@@ -26,7 +26,7 @@ exports.addFolder = async (req, res) => {
 };
 
 exports.getFolders = async (req, res) => {
-  const { userId } = req.body;
+  const { userId, type } = req.body;
 
   try {
     const session = store.openSession();
@@ -35,6 +35,7 @@ exports.getFolders = async (req, res) => {
     const folders = await session
       .query({ collection: "Folders" })
       .whereEquals("creator", userId)
+      .andWhere("type", type) 
       .all();
 
     res.json(folders);
