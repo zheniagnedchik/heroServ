@@ -32,13 +32,18 @@ exports.getFolders = async (req, res) => {
     const session = store.openSession();
 
     // Подразумевается, что у вас есть индекс, индексирующий документы пользователей по Id
-    const folders = await session
-      .query({ collection: "Folders" })
-      .whereEquals("creator", userId)
-      .andWhere("type", type) 
-      .all();
+    let query = session
+    .query({ collection: "Folders" })
+    .whereEquals("creator", userId);
 
-    res.json(folders);
+  // If type is provided, add an additional filter
+  if (type) {
+    query = query.andWhereEquals("type", type);
+  }
+
+  const folders = await query.all();
+
+  res.json(folders);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
   }
