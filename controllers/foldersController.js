@@ -26,19 +26,21 @@ exports.addFolder = async (req, res) => {
 };
 
 exports.getFolders = async (req, res) => {
-  const { userId,  type} = req.body;
+ 
 
   try {
     const session = store.openSession();
+    const { userId,  type} = req.body;
 
     // Подразумевается, что у вас есть индекс, индексирующий документы пользователей по Id
-    const folders = await session
-      .query({ collection: "Folders" })
-      .whereIn("creator", userId)
-      .whereEquals("type", type)
-      .all();
+    let results = await session.query({ collection: 'Folders' })
+    .whereEquals('creator', userId)
+    .whereEquals('type', type)
+    .all();
 
-    res.json(folders);
+
+
+    res.json(results);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
   }
