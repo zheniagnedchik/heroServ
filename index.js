@@ -112,6 +112,7 @@ app.post("/del_folder", foldersController.delFolder);
 app.post("/del_prog_in_list", foldersController.delProgInFolder);
 app.post("/add_chat_folder",chatFoldersControler.addChatFolder);
 app.post("/get_chat_folder",chatFoldersControler.getChatFolders);
+app.post("/add_folder_to_dialog",dialogController.addFolderToDialog);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4");
   const outputPath = path.join(__dirname, "output_video.mp4");

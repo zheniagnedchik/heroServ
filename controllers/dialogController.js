@@ -135,3 +135,24 @@ exports.setNew = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
+
+exports.addFolderToDialog = async (req, res) => {
+  const session = store.openSession();
+  const { ids, folderData } = req.body;
+  try {
+    for (const id of ids) {
+      const entity = await session.load(id);
+      if (entity) {
+        if (entity.folders) {
+          entity.folders = [...entity.folders, folderData];
+        } else {
+          entity.folders = [folderData];
+        }
+        await session.saveChanges();
+      }
+    }
+    res.send('ok')
+  } catch (error) {
+    res.send(error)
+  }
+};
