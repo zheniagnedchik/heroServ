@@ -20,7 +20,7 @@ exports.addChatFolder = async (req, res) => {
 
     await session.store(newPost);
     await session.saveChanges();
-    res.send("ok");
+    res.send(newPost);
   } catch (error) {
     res.send({ success: false, message: error.message });
   }
