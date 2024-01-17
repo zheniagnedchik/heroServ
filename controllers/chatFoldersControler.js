@@ -15,8 +15,8 @@ exports.addChatFolder = async (req, res) => {
   console.log(res);
   try {
     const session = store.openSession();
-    const { creator, type, ids } = req.body;
-    const newPost = new ChatFolders(creator, type, ids);
+    const { creator, type, ids, title } = req.body;
+    const newPost = new ChatFolders(creator, type, ids,title);
 
     await session.store(newPost);
     await session.saveChanges();
