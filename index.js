@@ -12,6 +12,7 @@ const multer = require("multer");
 const http = require("http");
 const socketIo = require("socket.io");
 const foldersController = require("./controllers/foldersController");
+const  chatFoldersControler  = require("./controllers/chatFoldersControler");
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -109,6 +110,8 @@ app.post("/get_trainings_from_folder", trainingController.getTrainingsForomFolde
 app.post("/change_folder", foldersController.changeFolder);
 app.post("/del_folder", foldersController.delFolder);
 app.post("/del_prog_in_list", foldersController.delProgInFolder);
+app.post("/add_chat_folder",chatFoldersControler.addChatFolder);
+app.post("/get_chat_folder",chatFoldersControler.getChatFolders);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4");
   const outputPath = path.join(__dirname, "output_video.mp4");
