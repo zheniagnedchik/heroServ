@@ -212,6 +212,48 @@ exports.updateService = async (req, res) => {
     res.status(500).json({ error: "Произошла ошибка сервера" });
   }
 };
+
+exports.deleteService = async (req, res) => {
+  try {
+    const { email, serviceId } = req.body;
+
+    if (!serviceId) {
+      return res
+        .status(400)
+        .json({ error: "Не предоставлен ID услуги для удаления" });
+    }
+
+    const session = store.openSession();
+    const user = await session
+      .query({ collection: "Users" })
+      .whereEquals("email", email)
+      .firstOrNull();
+
+    if (user) {
+      const serviceIndex = user.services.findIndex((s) => s.id === serviceId);
+
+      if (serviceIndex !== -1) {
+        user.services.splice(serviceIndex, 1); // Удаляем услугу
+        await session.saveChanges();
+        res.status(200).json({
+          message: `Сервис с ID ${serviceId} удален для пользователя с email ${email}`,
+        });
+      } else {
+        res.status(404).json({
+          error: `Услуга с ID ${serviceId} не найдена для пользователя с email ${email}`,
+        });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ error: `Пользователь с email ${email} не найден` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Произошла ошибка сервера" });
+  }
+};
+
 exports.getUser = async (req, res) => {
   try {
     const { email } = req.body;
@@ -852,16 +894,18 @@ exports.getCallories = async (req, res) => {
 
     if (user && user.calories && user.calories.length > 0) {
       // Find the latest time value
-      const latestTime = Math.max(...user.calories.map(c => c.time));
+      const latestTime = Math.max(...user.calories.map((c) => c.time));
 
       // Convert the latest time and current time to Date objects
       const latestDate = new Date(latestTime);
       const currentDate = new Date();
 
       // Check if the latest time is from the previous day
-      if (latestDate.getDate() < currentDate.getDate() ||
-          latestDate.getMonth() < currentDate.getMonth() ||
-          latestDate.getFullYear() < currentDate.getFullYear()) {
+      if (
+        latestDate.getDate() < currentDate.getDate() ||
+        latestDate.getMonth() < currentDate.getMonth() ||
+        latestDate.getFullYear() < currentDate.getFullYear()
+      ) {
         // Clear the calories array
         user.calories = [];
       }
@@ -924,37 +968,37 @@ exports.userUpd = async (req, res) => {
     res.status(500).send("Error updating users");
   }
 };
-exports.delCalories =  async (req, res) => {
+exports.delCalories = async (req, res) => {
   const userId = req.body.userId;
 
   if (!userId) {
-      return res.status(400).send('User ID is required');
+    return res.status(400).send("User ID is required");
   }
 
   try {
-      let session = store.openSession();
-      let user = await session.load(userId);
+    let session = store.openSession();
+    let user = await session.load(userId);
 
-      if (user && user.calories) {
-          // Find the latest time value
-          let latestTime = Math.max(...user.calories.map(c => c.time));
+    if (user && user.calories) {
+      // Find the latest time value
+      let latestTime = Math.max(...user.calories.map((c) => c.time));
 
-          // Remove items with the latest time value
-          user.calories = user.calories.filter(c => c.time !== latestTime);
+      // Remove items with the latest time value
+      user.calories = user.calories.filter((c) => c.time !== latestTime);
 
-          // Save the updated document
-          await session.saveChanges();
+      // Save the updated document
+      await session.saveChanges();
 
-          // Return the updated calories
-          res.status(200).json({
-              message: 'Calories data updated for user ' + userId,
-              updatedCalories: user.calories
-          });
-      } else {
-          res.status(404).send('User not found');
-      }
+      // Return the updated calories
+      res.status(200).json({
+        message: "Calories data updated for user " + userId,
+        updatedCalories: user.calories,
+      });
+    } else {
+      res.status(404).send("User not found");
+    }
   } catch (err) {
-      console.error('Error:', err);
-      res.status(500).send('Internal Server Error');
+    console.error("Error:", err);
+    res.status(500).send("Internal Server Error");
   }
-}
+};
