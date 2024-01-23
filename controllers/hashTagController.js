@@ -11,16 +11,44 @@ const Shop = require("../models/shop");
 const Folders = require("../models/folders");
 const HashTag = require("../models/hashTag");
 
-exports.addHAshTag = async (req, res) => {
+// exports.addHAshTag = async (req, res) => {
+//   console.log(res);
+//   try {
+//     const session = store.openSession();
+//     const { creator, type, clients, title } = req.body;
+//     const newPost = new HashTag(creator, type, clients, title);
+
+//     await session.store(newPost);
+//     await session.saveChanges();
+//     res.send(newPost);
+//   } catch (error) {
+//     res.send({ success: false, message: error.message });
+//   }
+// };
+exports.addHashTag = async (req, res) => {
   console.log(res);
   try {
     const session = store.openSession();
     const { creator, type, clients, title } = req.body;
-    const newPost = new HashTag(creator, type, clients, title);
 
-    await session.store(newPost);
-    await session.saveChanges();
-    res.send(newPost);
+    // Поиск существующего хэштега по creatorId и title
+    const existingHashTag = await session
+      .query(HashTag)
+      .whereEquals("creator", creator)
+      .whereEquals("title", title)
+      .firstOrDefault();
+
+    if (existingHashTag) {
+      // Если хэштег найден, обновляем поле clients
+      existingHashTag.clients.push(...clients);
+      await session.store(newPost);
+      res.send(existingHashTag);
+    } else {
+      const newPost = new HashTag(creator, type, clients, title);
+      await session.store(newPost);
+      await session.saveChanges();
+      res.send(newPost);
+    }
   } catch (error) {
     res.send({ success: false, message: error.message });
   }
