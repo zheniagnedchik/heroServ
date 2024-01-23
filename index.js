@@ -12,7 +12,8 @@ const multer = require("multer");
 const http = require("http");
 const socketIo = require("socket.io");
 const foldersController = require("./controllers/foldersController");
-const  chatFoldersControler  = require("./controllers/chatFoldersControler");
+const chatFoldersControler = require("./controllers/chatFoldersControler");
+const hashTagController = require("./controllers/hashTagController");
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -106,16 +107,21 @@ app.get("/users_upd", userController.userUpd);
 app.post("/del_calories", userController.delCalories);
 app.post("/add_folder", foldersController.addFolder);
 app.post("/get_folders", foldersController.getFolders);
-app.post("/get_trainings_from_folder", trainingController.getTrainingsForomFolder);
+app.post(
+  "/get_trainings_from_folder",
+  trainingController.getTrainingsForomFolder
+);
 app.post("/change_folder", foldersController.changeFolder);
 app.post("/del_folder", foldersController.delFolder);
 app.post("/del_prog_in_list", foldersController.delProgInFolder);
-app.post("/add_chat_folder",chatFoldersControler.addChatFolder);
-app.post("/get_chat_folder",chatFoldersControler.getChatFolders);
-app.post("/add_folder_to_dialog",dialogController.addFolderToDialog);
-app.post("/del_chat_folder",chatFoldersControler.delChatFolder);
+app.post("/add_chat_folder", chatFoldersControler.addChatFolder);
+app.post("/get_chat_folder", chatFoldersControler.getChatFolders);
+app.post("/add_folder_to_dialog", dialogController.addFolderToDialog);
+app.post("/del_chat_folder", chatFoldersControler.delChatFolder);
 app.post("/del_chat", dialogController.delChat);
 app.post("/del_service", userController.deleteService);
+app.post("/get_hash_tag", hashTagController.getHashTags);
+app.post("/add_hash_tag", hashTagController.addHAshTag);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4");
   const outputPath = path.join(__dirname, "output_video.mp4");
