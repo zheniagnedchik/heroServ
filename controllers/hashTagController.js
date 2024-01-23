@@ -33,7 +33,7 @@ exports.addHashTag = async (req, res) => {
 
     // Поиск существующего хэштега по creatorId и title
     const existingHashTag = await session
-      .query(HashTag)
+      .query({ collection: "HashTags" })
       .whereEquals("creator", creator)
       .whereEquals("title", title)
       .firstOrDefault();
@@ -42,7 +42,7 @@ exports.addHashTag = async (req, res) => {
       // Если хэштег найден, обновляем поле clients
       existingHashTag.clients.push(...clients);
       await session.store(newPost);
-      res.send(existingHashTag);
+      res.send(newPost);
     } else {
       const newPost = new HashTag(creator, type, clients, title);
       await session.store(newPost);
