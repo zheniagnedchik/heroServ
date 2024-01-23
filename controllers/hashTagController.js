@@ -16,11 +16,21 @@ exports.addHAshTag = async (req, res) => {
   try {
     const session = store.openSession();
     const { creator, type, clients, title } = req.body;
-    const newPost = new HashTag(creator, type, clients, title);
-
-    await session.store(newPost);
-    await session.saveChanges();
-    res.send(newPost);
+    const existingHashTag = await session
+      .query({ collection: "HashTags" })
+      .whereEquals("creator", creator)
+      .whereEquals("title", title)
+      .firstOrDefault();
+    if (existingHashTag) {
+      existingHashTag.clients.push(...clients);
+      await session.store(newPost);
+      res.send(existingHashTag);
+    } else {
+      const newPost = new HashTag(creator, type, clients, title);
+      await session.store(newPost);
+      await session.saveChanges();
+      res.send(newPost);
+    }
   } catch (error) {
     res.send({ success: false, message: error.message });
   }
