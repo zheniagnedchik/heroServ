@@ -44,10 +44,10 @@ exports.getClients = async (req, res) => {
       .query({ collection: "HashTags" })
       .whereEquals("creator", creator)
       .all();
-    const all = results.map((item) => item.ids).flat();
+    // const all = results.map((item) => item.ids).flat();
     console.log("🚀 ~ exports.getClients= ~ all:", all);
     // Извлечение и возвращение массива ids
-    res.send(all);
+    res.send(results);
   } catch (e) {
     res.send(e);
   }
