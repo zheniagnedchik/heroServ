@@ -46,7 +46,7 @@ exports.getClients = async (req, res) => {
       .all();
     // const all = results.map((item) => item.ids).flat();
     // Извлечение и возвращение массива ids
-    res.send("ok");
+    res.send(results);
   } catch (e) {
     res.send(e);
   }
