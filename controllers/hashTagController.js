@@ -44,9 +44,9 @@ exports.getClients = async (req, res) => {
       .query({ collection: "HashTags" })
       .whereEquals("creator", creator)
       .all();
-
+    const all = results.map((item) => item.ids).flat();
     // Извлечение и возвращение массива ids
-    res.send(results.map((item) => item.ids).flat());
+    res.send(all);
   } catch (e) {
     res.send(e);
   }
