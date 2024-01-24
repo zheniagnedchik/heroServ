@@ -45,6 +45,7 @@ exports.getClients = async (req, res) => {
       .whereEquals("creator", creator)
       .all();
     const all = results.map((item) => item.ids).flat();
+    console.log("🚀 ~ exports.getClients= ~ all:", all);
     // Извлечение и возвращение массива ids
     res.send(all);
   } catch (e) {
