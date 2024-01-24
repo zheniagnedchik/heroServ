@@ -40,7 +40,7 @@ exports.getClients = async (req, res) => {
   const { creator } = req.body;
   try {
     // Запрос к базе данных
-    let results = await session
+    const results = await session
       .query({ collection: "HashTags" })
       .whereEquals("creator", creator)
       .all();
