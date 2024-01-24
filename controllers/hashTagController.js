@@ -35,6 +35,22 @@ exports.addHAshTag = async (req, res) => {
     res.send({ success: false, message: error.message });
   }
 };
+exports.getClients = async (req, res) => {
+  const session = store.openSession();
+  const { creator } = req.body;
+  try {
+    // Запрос к базе данных
+    let results = await session
+      .query({ collection: "HashTags" })
+      .whereEquals("creator", creator)
+      .all();
+
+    // Извлечение и возвращение массива ids
+    res.send(results.map((item) => item.ids).flat());
+  } catch (e) {
+    res.send(e);
+  }
+};
 // exports.addHashTag = async (req, res) => {
 //   console.log(res);
 //   try {
