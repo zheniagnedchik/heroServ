@@ -20,7 +20,7 @@ exports.addHAshTag = async (req, res) => {
       .query({ collection: "HashTags" })
       .whereEquals("creator", creator)
       .whereEquals("title", title)
-      .firstOrDefault();
+      .all();
     if (existingHashTag) {
       existingHashTag.clients.push(...clients);
       await session.store(newPost);
