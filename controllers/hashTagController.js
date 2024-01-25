@@ -93,6 +93,17 @@ exports.getHashTags = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+exports.getClientFromId = async (req, res) => {
+  const { id } = req.body;
+  const session = store.openSession();
+
+  try {
+    const document = await session.load(id);
+    res.send(document);
+  } catch (error) {
+    res.send(error);
+  }
+};
 exports.changeFolder = async (req, res) => {
   try {
     const session = store.openSession();
