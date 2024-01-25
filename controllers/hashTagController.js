@@ -23,12 +23,12 @@ exports.addHAshTag = async (req, res) => {
       .all();
     if (existingHashTag.length !== 0) {
       existingHashTag[0].ids.push(...clients);
-      await session.store(newPost);
+      await session.saveChanges();
       res.send(existingHashTag);
     } else {
       const newPost = new HashTag(creator, type, clients, title);
       await session.store(newPost);
-      await session.saveChanges();
+
       res.send(newPost);
     }
   } catch (error) {
