@@ -123,6 +123,7 @@ app.post("/del_service", userController.deleteService);
 app.post("/get_hash_tag", hashTagController.getHashTags);
 app.post("/add_hash_tag", hashTagController.addHAshTag);
 app.post("/get_clients", hashTagController.getClients);
+app.post("/get_hashtag_from_id", hashTagController.getClientFromId);
 app.get("/convert", (req, res) => {
   const inputPath = path.join(__dirname, "1698739988758.mp4");
   const outputPath = path.join(__dirname, "output_video.mp4");
