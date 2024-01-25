@@ -22,7 +22,7 @@ exports.addHAshTag = async (req, res) => {
       .whereEquals("title", title)
       .all();
     if (existingHashTag.length !== 0) {
-      existingHashTag[0].clients.push(...clients);
+      existingHashTag[0].ids.push(...clients);
       await session.store(newPost);
       res.send(existingHashTag);
     } else {
