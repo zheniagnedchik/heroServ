@@ -28,7 +28,7 @@ exports.addHAshTag = async (req, res) => {
     } else {
       const newPost = new HashTag(creator, type, clients, title);
       await session.store(newPost);
-
+      await session.saveChanges();
       res.send(newPost);
     }
   } catch (error) {
