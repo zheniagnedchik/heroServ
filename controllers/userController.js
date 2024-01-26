@@ -832,8 +832,14 @@ exports.generatePost = async (req, res) => {
     };
 
     const data = {
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-1106",
+      response_format: { type: "json_object" },
       messages: [
+        {
+          role: "system",
+          content:
+            "Отвечай в формате JSON вида {'response': {'food':'', 'weight':'', 'meal':'', 'callories':'','fats':'', 'proteins':'', 'carbohydrates':'', 'ingredients':'','day':''}} весть текст должен быть на русском",
+        },
         {
           role: "user",
           content: mess,
