@@ -832,7 +832,7 @@ exports.generatePost = async (req, res) => {
     };
 
     const data = {
-      model: "gpt-3.5-turbo-1106",
+      model: "gpt-3.5-turbo",
       response_format: { type: "json_object" },
       messages: [
         {
