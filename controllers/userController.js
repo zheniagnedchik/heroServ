@@ -8,6 +8,7 @@ const store = new DocumentStore("http://64.226.88.96:8080", "Users");
 store.initialize();
 const path = require("path");
 const axios = require("axios");
+const { products } = require("../products");
 
 exports.register = async (req, res) => {
   try {
@@ -837,8 +838,9 @@ exports.generatePost = async (req, res) => {
       messages: [
         {
           role: "system",
-          content:
-            "Отвечай в формате JSON вида {'response': {'food':'', 'weight':'', 'meal':'', 'callories':'','fats':'', 'proteins':'', 'carbohydrates':'', 'ingredients':'','day':'',how_to_cook:''}} весть текст должен быть на русском",
+          content: `Отвечай в формате JSON вида {'response': {'food':'', 'weight':'', 'meal':'', 'callories':'','fats':'', 'proteins':'', 'carbohydrates':'', 'ingredients':'','day':'',how_to_cook:''}} весть текст должен быть на русском, используй только мой список продуктов, там указаны кбжу с рассчетом на 1 грамм ${JSON.stringify(
+            products
+          )}`,
         },
         {
           role: "user",
