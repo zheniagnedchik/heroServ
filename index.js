@@ -14,7 +14,7 @@ const socketIo = require("socket.io");
 const foldersController = require("./controllers/foldersController");
 const chatFoldersControler = require("./controllers/chatFoldersControler");
 const hashTagController = require("./controllers/hashTagController");
-
+const webPush = require("web-push");
 const server = http.createServer(app);
 const io = socketIo(server);
 const storage = multer.diskStorage({
@@ -143,6 +143,34 @@ app.get("/convert", (req, res) => {
     .save(outputPath);
 });
 app.get("/test", postController.test);
+
+const publicKey =
+  "BDZJSiMXSJUhryPkjFh_H84ZeEjVNfq5STCXVDEW4bpXye1mybGCjufRFIVmMxJN1wHOGUunGyBra0qvSa0fGJ8";
+const privateKey = "upQsMoPu4_T6aT3a8Nwg8b7Cd3wNjQwfD5PgCYJjTmc";
+webPush.setVapidDetails("mailto:example@yourdomain.org", publicKey, privateKey);
+
+// Хранилище для подписок
+const subscriptions = {};
+
+app.post("/subscribe", (req, res) => {
+  const { subscription, id } = req.body;
+  subscriptions[id] = subscription;
+  return res.status(201).json({ data: { success: true } });
+});
+
+app.post("/send", (req, res) => {
+  const { message, title, id } = req.body;
+  const subscription = subscriptions[id];
+  const payload = JSON.stringify({ title, message });
+  webPush
+    .sendNotification(subscription, payload)
+    .catch((error) => {
+      return res.status(400).json({ data: { success: false } });
+    })
+    .then((value) => {
+      return res.status(201).json({ data: { success: true } });
+    });
+});
 io.on("connection", (socket) => {
   console.log("New client connected");
   socket.on("join", (userId) => {
