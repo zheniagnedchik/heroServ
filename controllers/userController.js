@@ -837,9 +837,7 @@ exports.generatePost = async (req, res) => {
       messages: [
         {
           role: "system",
-          content: `Отвечай в формате JSON вида {'response': {'food':'', 'weight':'', 'meal':'', 'callories':'','fats':'', 'proteins':'', 'carbohydrates':'', 'ingredients':'','day':'',how_to_cook:''}} весть текст должен быть на русском, используй только мой список продуктов, там указаны кбжу с рассчетом на 1 грамм ${JSON.stringify(
-            products
-          )}`,
+          content: `Отвечай в формате JSON вида {'response': {'food':'', 'weight':'', 'meal':'', 'callories':'','fats':'', 'proteins':'', 'carbohydrates':'', 'ingredients':'','day':'',how_to_cook:''}} весть текст должен быть на русском, используй только мой список продуктов, там указаны кбжу с рассчетом на 1 грамм ${JSON.stringify()}`,
         },
         {
           role: "user",

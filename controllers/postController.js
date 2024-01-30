@@ -215,8 +215,8 @@ exports.uploudFileToPost = async (req, res) => {
         // });
       }
     } else {
-      const dataImg = await uploadImage(path.join(folder, testName[1]));
-      user[folder] = dataImg.result.variants[0];
+      // const dataImg = await uploadImage(path.join(folder, testName[1]));
+      user[folder] = `${URI}/${path.join(folder, testName[1])}`;
       await saveUser(user);
     }
     res.json({
