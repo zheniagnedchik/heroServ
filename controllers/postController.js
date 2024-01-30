@@ -122,7 +122,11 @@ exports.uploudFileToPost = async (req, res) => {
     const name = req.file.originalname;
     const testName = name.split("_");
     const fileUri = path.join(folder, testName[1]);
-    const appr = JSON.parse(approaches);
+    let appr;
+    if (approaches) {
+      appr = JSON.parse(approaches);
+    }
+
     if (folder === "photo") {
       if (type === "video") {
         const thumbnailFileName = `${testName[1]}.jpg`;
@@ -185,8 +189,9 @@ exports.uploudFileToPost = async (req, res) => {
       } else {
         const dataImg = await uploadImage(path.join(folder, testName[1]));
         const prev = ``;
-        const uri = dataImg.result.variants[0];
+
         const altURI = `${URI}/${path.join(folder, testName[1])}`;
+        const uri = altURI;
         const type = "photo";
         const description = desc;
         const postName = namePost;
@@ -214,9 +219,9 @@ exports.uploudFileToPost = async (req, res) => {
       user[folder] = dataImg.result.variants[0];
       await saveUser(user);
     }
-    // res.json({
-    //   message: "Изображение успешно загружено и путь сохранен в базе данных.",
-    // });
+    res.json({
+      message: "Изображение успешно загружено и путь сохранен в базе данных.",
+    });
   } catch (error) {
     console.error(error);
     res
